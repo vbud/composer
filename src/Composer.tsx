@@ -1,0 +1,177 @@
+import React, { useContext, useEffect, useRef } from 'react';
+import classnames from 'classnames';
+import { useDebouncedCallback } from 'use-debounce';
+import { Resizable } from 're-resizable';
+
+import Toolbar from './Toolbar/Toolbar';
+import { StatusMessage } from './StatusMessage/StatusMessage';
+import {
+  initialEditorWidth,
+  StoreContext,
+} from 'src/StoreContext/StoreContext';
+import { CodeEditor } from './CodeEditor/CodeEditor';
+import { Canvas } from './Canvas/Canvas';
+import { Text } from './Text/Text';
+import SnippetBrowser from './SnippetBrowser/SnippetBrowser';
+import { useClickOutside } from 'src/utils/useClickOutside';
+import { formatAndInsert } from 'src/utils/formatting';
+import { isValidLocation } from 'src/utils/cursor';
+import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
+
+import * as styles from './Composer.css';
+
+export default function Composer() {
+  const [state, dispatch] = useContext(StoreContext);
+  const {
+    editorView,
+    editorWidth,
+    showSnippets,
+    showCanvasOnly,
+    cursorPosition,
+    selectedFrameId,
+    frames,
+    ready,
+  } = state;
+
+  useEffect(() => {
+    const keyDownListener = (e: KeyboardEvent) => {
+      if (e.code === 'Backslash' && isMetaOrCtrlExclusivelyPressed(e)) {
+        e.preventDefault();
+        dispatch({ type: 'toggleShowCanvasOnly' });
+      } else if (e.code === 'KeyK' && isMetaOrCtrlExclusivelyPressed(e)) {
+        e.preventDefault();
+        dispatch({
+          type: 'toggleSnippets',
+        });
+      }
+    };
+
+    document.addEventListener('keydown', keyDownListener);
+    return () => {
+      document.removeEventListener('keydown', keyDownListener);
+    };
+  }, [dispatch, showCanvasOnly]);
+
+  const updateEditorWidth = useDebouncedCallback((width: number) => {
+    dispatch({
+      type: 'updateEditorWidth',
+      payload: { editorWidth: width },
+    });
+  }, 1);
+
+  const clickOutsideHandler = () => {
+    dispatch({ type: 'toggleSnippets' });
+  };
+  const snippetsRef = useRef<HTMLDivElement>(null);
+  useClickOutside(snippetsRef, clickOutsideHandler);
+
+  if (!ready) {
+    return null;
+  }
+
+  const editor = (
+    <div className={styles.editorContainer}>
+      {selectedFrameId ? (
+        <CodeEditor code={frames[selectedFrameId].code} />
+      ) : (
+        <div className={styles.emptyCodeEditor}>
+          <Text>No frame selected.</Text>
+        </div>
+      )}
+    </div>
+  );
+
+  const sizeStyles = {
+    height: '100%',
+    width: `${editorWidth}px`,
+  };
+
+  return (
+    <div className={styles.root}>
+      {!showCanvasOnly && <Toolbar />}
+      <div className={styles.main}>
+        <Resizable
+          className={classnames(styles.resizeableContainer, {
+            [styles.resizeableContainer_isHidden]: showCanvasOnly,
+          })}
+          defaultSize={sizeStyles}
+          size={sizeStyles}
+          minWidth={initialEditorWidth}
+          maxWidth="80vw"
+          onResize={(_event, _direction, { offsetWidth }) => {
+            updateEditorWidth(offsetWidth);
+          }}
+          enable={{
+            top: false,
+            right: true,
+            bottom: false,
+            left: false,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false,
+          }}
+        >
+          {editor}
+        </Resizable>
+        <Canvas frames={frames} selectedFrameId={selectedFrameId} />
+      </div>
+      {showSnippets && (
+        <SnippetBrowser
+          ref={snippetsRef}
+          onSelectSnippet={(snippet) => {
+            if (editorView) {
+              dispatch({ type: 'toggleSnippets' });
+
+              setTimeout(() => editorView.focus(), 0);
+
+              if (!selectedFrameId) {
+                dispatch({
+                  type: 'displayStatusMessage',
+                  payload: {
+                    message: 'Select a frame before adding a snippet',
+                    tone: 'critical',
+                  },
+                });
+                return;
+              }
+
+              const code = frames[selectedFrameId].code;
+              const validCursorPosition = isValidLocation({
+                code,
+                cursor: cursorPosition,
+              });
+
+              if (!validCursorPosition) {
+                dispatch({
+                  type: 'displayStatusMessage',
+                  payload: {
+                    message: 'Cannot insert snippet at cursor',
+                    tone: 'critical',
+                  },
+                });
+                return;
+              }
+
+              const result = formatAndInsert({
+                code,
+                cursor: cursorPosition,
+                snippet: snippet.code,
+              });
+
+              editorView.dispatch({
+                changes: {
+                  from: 0,
+                  to: code.length,
+                  insert: result.code,
+                },
+                selection: { anchor: result.cursor },
+              });
+            }
+          }}
+        />
+      )}
+      <StatusMessage />
+    </div>
+  );
+}
