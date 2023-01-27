@@ -1,46 +1,41 @@
 import React, { useContext, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 import classnames from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
 import { Resizable } from 're-resizable';
 
-import Toolbar from './Toolbar/Toolbar';
-import { StatusMessage } from './StatusMessage/StatusMessage';
-import {
-  initialEditorWidth,
-  StoreContext,
-} from 'src/StoreContext/StoreContext';
-import { CodeEditor } from './CodeEditor/CodeEditor';
-import { Canvas } from './Canvas/Canvas';
-import { Text } from './Text/Text';
-import SnippetBrowser from './SnippetBrowser/SnippetBrowser';
+import { FileContextProvider } from 'src/contexts/FileContext';
+import Toolbar from 'src/Toolbar/Toolbar';
+import { StatusMessage } from 'src/StatusMessage/StatusMessage';
+import { initialEditorWidth, AppContext } from 'src/contexts/AppContext';
+import { FileContext } from 'src/contexts/FileContext';
+import { CodeEditor } from 'src/CodeEditor/CodeEditor';
+import { Canvas } from 'src/Canvas/Canvas';
+import { Text } from 'src/Text/Text';
+import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
 import { useClickOutside } from 'src/utils/useClickOutside';
 import { formatAndInsert } from 'src/utils/formatting';
 import { isValidLocation } from 'src/utils/cursor';
 import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
 
-import * as styles from './Composer.css';
+import * as styles from '../pageStyles/File.css';
 
-export default function Composer() {
-  const [state, dispatch] = useContext(StoreContext);
-  const {
-    editorView,
-    editorWidth,
-    showSnippets,
-    showCanvasOnly,
-    cursorPosition,
-    selectedFrameId,
-    frames,
-    ready,
-  } = state;
+function File() {
+  const [
+    { editorView, showSnippets, showCanvasOnly, selectedFrameId, fileFrames },
+    fileDispatch,
+  ] = useContext(FileContext);
+  const [{ editorWidth }, appDispatch] = useContext(AppContext);
 
   useEffect(() => {
     const keyDownListener = (e: KeyboardEvent) => {
       if (e.code === 'Backslash' && isMetaOrCtrlExclusivelyPressed(e)) {
         e.preventDefault();
-        dispatch({ type: 'toggleShowCanvasOnly' });
+        fileDispatch({ type: 'toggleShowCanvasOnly' });
       } else if (e.code === 'KeyK' && isMetaOrCtrlExclusivelyPressed(e)) {
         e.preventDefault();
-        dispatch({
+        fileDispatch({
           type: 'toggleSnippets',
         });
       }
@@ -50,29 +45,25 @@ export default function Composer() {
     return () => {
       document.removeEventListener('keydown', keyDownListener);
     };
-  }, [dispatch, showCanvasOnly]);
+  }, [fileDispatch, showCanvasOnly]);
 
   const updateEditorWidth = useDebouncedCallback((width: number) => {
-    dispatch({
+    appDispatch({
       type: 'updateEditorWidth',
-      payload: { editorWidth: width },
+      payload: width,
     });
   }, 1);
 
   const clickOutsideHandler = () => {
-    dispatch({ type: 'toggleSnippets' });
+    fileDispatch({ type: 'toggleSnippets' });
   };
   const snippetsRef = useRef<HTMLDivElement>(null);
   useClickOutside(snippetsRef, clickOutsideHandler);
 
-  if (!ready) {
-    return null;
-  }
-
   const editor = (
     <div className={styles.editorContainer}>
       {selectedFrameId ? (
-        <CodeEditor code={frames[selectedFrameId].code} />
+        <CodeEditor frameId={selectedFrameId} />
       ) : (
         <div className={styles.emptyCodeEditor}>
           <Text>No frame selected.</Text>
@@ -88,6 +79,11 @@ export default function Composer() {
 
   return (
     <div className={styles.root}>
+      <Head>
+        <title>composer</title>
+        <meta name="description" content="Design + engineering = ❤️" />
+      </Head>
+
       {!showCanvasOnly && <Toolbar />}
       <div className={styles.main}>
         <Resizable
@@ -114,19 +110,19 @@ export default function Composer() {
         >
           {editor}
         </Resizable>
-        <Canvas frames={frames} selectedFrameId={selectedFrameId} />
+        <Canvas fileFrames={fileFrames} selectedFrameId={selectedFrameId} />
       </div>
       {showSnippets && (
         <SnippetBrowser
           ref={snippetsRef}
           onSelectSnippet={(snippet) => {
             if (editorView) {
-              dispatch({ type: 'toggleSnippets' });
+              fileDispatch({ type: 'toggleSnippets' });
 
               setTimeout(() => editorView.focus(), 0);
 
               if (!selectedFrameId) {
-                dispatch({
+                fileDispatch({
                   type: 'displayStatusMessage',
                   payload: {
                     message: 'Select a frame before adding a snippet',
@@ -136,14 +132,14 @@ export default function Composer() {
                 return;
               }
 
-              const code = frames[selectedFrameId].code;
+              const { code, cursorPosition } = fileFrames[selectedFrameId];
               const validCursorPosition = isValidLocation({
                 code,
                 cursor: cursorPosition,
               });
 
               if (!validCursorPosition) {
-                dispatch({
+                fileDispatch({
                   type: 'displayStatusMessage',
                   payload: {
                     message: 'Cannot insert snippet at cursor',
@@ -159,13 +155,12 @@ export default function Composer() {
                 snippet: snippet.code,
               });
 
-              editorView.dispatch({
-                changes: {
-                  from: 0,
-                  to: code.length,
-                  insert: result.code,
+              fileDispatch({
+                type: 'updateEditorState',
+                payload: {
+                  code: result.code,
+                  cursorPosition: result.cursor,
                 },
-                selection: { anchor: result.cursor },
               });
             }
           }}
@@ -173,5 +168,18 @@ export default function Composer() {
       )}
       <StatusMessage />
     </div>
+  );
+}
+
+export default function FileContainer() {
+  const router = useRouter();
+  const { fileId } = router.query;
+
+  return (
+    typeof fileId === 'string' && (
+      <FileContextProvider fileId={fileId}>
+        <File />
+      </FileContextProvider>
+    )
   );
 }

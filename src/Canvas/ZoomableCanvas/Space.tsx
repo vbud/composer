@@ -102,10 +102,6 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
     );
   }
 
-  public componentWillUnmount() {
-    this.destroyViewPort();
-  }
-
   public render() {
     return (
       <div
@@ -216,15 +212,18 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
     }
   };
 
-  private setOuterDivRefAndCreateViewPort = async (node: HTMLDivElement) => {
+  private setOuterDivRefAndCreateViewPort = async (
+    node: HTMLDivElement | null
+  ) => {
     this.destroyViewPort();
-    this.outerDivElement = node;
 
-    this.resizeObserver.observe(this.outerDivElement);
+    if (node) {
+      this.outerDivElement = node;
 
-    const Hammer = (await import('hammerjs')).default;
+      this.resizeObserver.observe(this.outerDivElement);
 
-    if (this.outerDivElement) {
+      const Hammer = (await import('hammerjs')).default;
+
       this.viewPort = new ViewPort(this.outerDivElement, Hammer, {
         onContextMenu: this.props.onContextMenu,
         onUpdated: this.handleViewPortUpdated,
@@ -245,6 +244,8 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
         contextValue,
         transformStyle: this.createTransformStyle(),
       });
+    } else {
+      this.destroyViewPort();
     }
   };
 }

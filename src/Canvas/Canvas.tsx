@@ -3,21 +3,21 @@ import { Space } from './ZoomableCanvas';
 import { useDebouncedCallback } from 'use-debounce';
 
 import {
-  FrameConfigs,
+  FileFrames,
   SelectedFrameId,
-  StoreContext,
-} from 'src/StoreContext/StoreContext';
+  FileContext,
+} from 'src/contexts/FileContext';
 import { components } from 'src/utils/components';
 import { CanvasFrame } from './CanvasFrame';
 
 import * as styles from './Canvas.css';
 
 interface CanvasProps {
-  frames: FrameConfigs;
+  fileFrames: FileFrames;
   selectedFrameId: SelectedFrameId;
 }
-export const Canvas = ({ frames, selectedFrameId }: CanvasProps) => {
-  const [{ canvasPosition }, dispatch] = useContext(StoreContext);
+export const Canvas = ({ fileFrames, selectedFrameId }: CanvasProps) => {
+  const [{ canvasPosition }, dispatch] = useContext(FileContext);
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -46,10 +46,10 @@ export const Canvas = ({ frames, selectedFrameId }: CanvasProps) => {
         }}
         onUpdated={saveCanvasPosition}
       >
-        {Object.keys(frames).map((frameId) => (
+        {Object.keys(fileFrames).map((frameId) => (
           <CanvasFrame
             key={frameId}
-            frameConfig={frames[frameId]}
+            frameConfig={fileFrames[frameId]}
             components={components}
             selectedFrameId={selectedFrameId}
             scale={canvasPosition.zoom}

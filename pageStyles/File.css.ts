@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { colorPaletteVars, vars } from './theme.css';
+import { colorPaletteVars, vars } from '../src/theme.css';
 
 export const root = style({
   height: '100vh',

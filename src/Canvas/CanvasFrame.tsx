@@ -5,10 +5,10 @@ import { Rnd } from 'react-rnd';
 
 import { Frame } from '../Frame/Frame';
 import {
-  FrameConfig,
+  FileFrame,
   SelectedFrameId,
-  StoreContext,
-} from 'src/StoreContext/StoreContext';
+  FileContext,
+} from 'src/contexts/FileContext';
 import { Components } from 'src/utils/components';
 
 import * as styles from './CanvasFrame.css';
@@ -38,7 +38,7 @@ const directionToDeltas: Record<MoveInterval['direction'], [number, number]> = {
 };
 
 interface CanvasFrameProps {
-  frameConfig: FrameConfig;
+  frameConfig: FileFrame;
   components: Components;
   selectedFrameId: SelectedFrameId;
   scale: number;
@@ -52,7 +52,7 @@ export const CanvasFrame = ({
   scale,
   canvasEl,
 }: CanvasFrameProps) => {
-  const [{ canvasViewport }, dispatch] = useContext(StoreContext);
+  const [{ canvasViewport }, dispatch] = useContext(FileContext);
 
   const dragStartPosition = React.useRef({ x: 0, y: 0 });
   const canvasClientRect = useRef<DOMRect | null>(null);

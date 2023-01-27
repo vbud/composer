@@ -2,8 +2,8 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 
-import { StoreProvider } from 'src/StoreContext/StoreContext';
 import AppErrorBoundary from 'src/AppErrorBoundary';
+import { AppContextProvider } from 'src/contexts/AppContext';
 
 import 'src/globals.css';
 
@@ -19,9 +19,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <NonSSRWrapper>
       <AppErrorBoundary>
-        <StoreProvider>
+        <AppContextProvider>
           <Component {...pageProps} />
-        </StoreProvider>
+        </AppContextProvider>
       </AppErrorBoundary>
     </NonSSRWrapper>
   );

@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 
-import { FrameConfig } from 'src/StoreContext/StoreContext';
+import { FileFrame } from 'src/contexts/FileContext';
 import { compileJsx } from 'src/utils/compileJsx';
 import { Components } from 'src/utils/components';
 import RenderCode from '../RenderCode/RenderCode';
@@ -8,7 +8,7 @@ import RenderCode from '../RenderCode/RenderCode';
 import * as styles from './Frame.css';
 
 export interface FrameProps {
-  frameConfig: FrameConfig;
+  frameConfig: FileFrame;
   components: Components;
 }
 export const Frame = ({ frameConfig, components }: FrameProps) => {

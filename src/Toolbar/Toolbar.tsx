@@ -2,7 +2,7 @@ import React, { useContext, useRef } from 'react';
 
 import { snippets } from 'src/snippets';
 import { useClickOutside } from 'src/utils/useClickOutside';
-import { StoreContext } from 'src/StoreContext/StoreContext';
+import { FileContext } from 'src/contexts/FileContext';
 import ToolbarItem from './ToolbarItem/ToolbarItem';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
 import ZoomControlPanel from '../ZoomControlPanel/ZoomControlPanel';
@@ -14,7 +14,7 @@ import * as styles from './Toolbar.css';
 
 export default function Toolbar() {
   const [{ activeToolbarPanel, editorView, canvasPosition }, dispatch] =
-    useContext(StoreContext);
+    useContext(FileContext);
 
   const clickOutsideHandler = () => {
     dispatch({ type: 'closeToolbar' });

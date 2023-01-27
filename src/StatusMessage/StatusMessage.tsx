@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import classnames from 'classnames';
-import { StoreContext } from 'src/StoreContext/StoreContext';
+import { FileContext } from 'src/contexts/FileContext';
 import { Text } from '../Text/Text';
 import DismissIcon from '../icons/DismissIcon';
 
@@ -18,7 +18,7 @@ interface Props {
   dismissable?: boolean;
 }
 export const StatusMessage = ({ dismissable = false }: Props) => {
-  const [{ statusMessage }, dispatch] = useContext(StoreContext);
+  const [{ statusMessage }, dispatch] = useContext(FileContext);
   const cleanupTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const showStatusTimerRef = useRef<ReturnType<typeof setTimeout>>();
 

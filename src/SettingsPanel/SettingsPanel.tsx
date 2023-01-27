@@ -1,7 +1,7 @@
 import React, { useContext, ReactElement } from 'react';
 import { Heading } from '../Heading/Heading';
 import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
-import { StoreContext } from 'src/StoreContext/StoreContext';
+import { AppContext } from 'src/contexts/AppContext';
 import { ColorScheme } from 'src/utils/colorScheme';
 import { Stack } from '../Stack/Stack';
 
@@ -18,7 +18,7 @@ const colorModeIcon: Record<ColorScheme, ReactElement> = {
 };
 
 export default function SettingsPanel() {
-  const [{ colorScheme }, dispatch] = useContext(StoreContext);
+  const [{ colorScheme }, dispatch] = useContext(AppContext);
 
   return (
     <ToolbarPanel data-testid="settings-panel">
@@ -40,9 +40,7 @@ export default function SettingsPanel() {
                   onChange={() =>
                     dispatch({
                       type: 'updateColorScheme',
-                      payload: {
-                        colorScheme: option.toLowerCase() as ColorScheme,
-                      },
+                      payload: option.toLowerCase() as ColorScheme,
                     })
                   }
                   className={styles.realRadio}

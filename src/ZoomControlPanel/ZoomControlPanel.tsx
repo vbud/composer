@@ -5,10 +5,10 @@ import { Stack } from '../Stack/Stack';
 import { Heading } from '../Heading/Heading';
 import { Button } from '../Button/Button';
 import { Inline } from '../Inline/Inline';
-import { StoreContext } from 'src/StoreContext/StoreContext';
+import { FileContext } from 'src/contexts/FileContext';
 
 export default function ZoomControlPanel() {
-  const [{ canvasViewport }] = useContext(StoreContext);
+  const [{ canvasViewport }] = useContext(FileContext);
 
   return (
     <ToolbarPanel data-testid="preview-panel">

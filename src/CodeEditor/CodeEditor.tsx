@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import {
   keymap,
   highlightSpecialChars,
@@ -12,7 +12,7 @@ import {
   EditorView,
   ViewUpdate,
 } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
+import { EditorState, TransactionSpec } from '@codemirror/state';
 import {
   syntaxHighlighting,
   indentOnInput,
@@ -31,7 +31,10 @@ import { Diagnostic, linter, lintKeymap } from '@codemirror/lint';
 import { javascript } from '@codemirror/lang-javascript';
 import { debounce } from 'lodash';
 
-import { StoreContext } from 'src/StoreContext/StoreContext';
+import {
+  FileContext,
+  UpdateEditorStatePayload,
+} from 'src/contexts/FileContext';
 import { formatCode } from 'src/utils/formatting';
 import { compileJsx } from 'src/utils/compileJsx';
 import { cursorCoordinatesToCursorPosition } from 'src/utils/cursor';
@@ -77,17 +80,48 @@ const errorLinter = linter((view) => {
   return diagnostics;
 });
 
-export const CodeEditor = ({ code }: { code: string }) => {
-  const [_, dispatch] = useContext(StoreContext);
+export const CodeEditor = ({ frameId }: { frameId: string }) => {
+  const [{ editorView, fileFrames }, dispatch] = useContext(FileContext);
 
-  const setupEditor = useCallback((node: HTMLDivElement) => {
+  const { code } = fileFrames[frameId];
+
+  useEffect(() => {
+    if (!editorView) return;
+
+    const transaction: TransactionSpec = {};
+
+    const { code: stateCode, cursorPosition: stateCursorPosition } =
+      fileFrames[frameId];
+    const editorCode = editorView.state.doc.toString();
+    if (stateCode !== editorCode) {
+      transaction.changes = {
+        from: 0,
+        to: editorCode.length,
+        insert: stateCode,
+      };
+    }
+
+    const editorCursorPosition = editorView.state.selection.main.anchor;
+    if (stateCursorPosition !== editorCursorPosition) {
+      transaction.selection = { anchor: stateCursorPosition };
+    }
+
+    if (Object.keys(transaction).length > 0) {
+      editorView.dispatch(transaction);
+    }
+  }, [editorView, frameId, fileFrames]);
+
+  const setupEditor = useCallback((node: HTMLDivElement | null) => {
     if (node) {
-      const updateEditorState = debounce((payload) => {
-        dispatch({
-          type: 'updateEditorState',
-          payload,
-        });
-      }, 250);
+      const updateEditorState = debounce(
+        (payload: UpdateEditorStatePayload) => {
+          dispatch({
+            type: 'updateEditorState',
+            payload,
+          });
+        },
+        250
+      );
 
       const updateListener = EditorView.updateListener.of(
         (viewUpdate: ViewUpdate) => {
@@ -96,7 +130,7 @@ export const CodeEditor = ({ code }: { code: string }) => {
               // updateListener is a non-react callback, so we need to get the
               // current code and cursor from editor state instead of from context.
               code: viewUpdate.state.doc.toString(),
-              cursor: viewUpdate.state.selection.main.anchor,
+              cursorPosition: viewUpdate.state.selection.main.anchor,
             });
           }
         }
@@ -159,6 +193,9 @@ export const CodeEditor = ({ code }: { code: string }) => {
       const initialState = EditorState.create({
         extensions,
         doc: code,
+        selection: {
+          anchor: fileFrames[frameId].cursorPosition,
+        },
       });
 
       dispatch({
