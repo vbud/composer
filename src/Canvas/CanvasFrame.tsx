@@ -38,7 +38,7 @@ const directionToDeltas: Record<MoveInterval['direction'], [number, number]> = {
 };
 
 interface CanvasFrameProps {
-  frameConfig: FileFrame;
+  fileFrame: FileFrame;
   components: Components;
   selectedFrameId: SelectedFrameId;
   scale: number;
@@ -46,7 +46,7 @@ interface CanvasFrameProps {
 }
 
 export const CanvasFrame = ({
-  frameConfig,
+  fileFrame,
   components,
   selectedFrameId,
   scale,
@@ -58,7 +58,7 @@ export const CanvasFrame = ({
   const canvasClientRect = useRef<DOMRect | null>(null);
   const moveInterval = useRef<MoveInterval | null>(null);
 
-  const { id, x, y, width, height } = frameConfig;
+  const { id, x, y, width, height } = fileFrame;
 
   const focusIfSelected = useCallback((node: Rnd) => {
     if (node && id === selectedFrameId) {
@@ -202,7 +202,7 @@ export const CanvasFrame = ({
         tabIndex={0} // make element focusable so it can handle keyboard events
       >
         <div className={styles.frameName}>{id}</div>
-        <Frame frameConfig={frameConfig} components={components} />
+        <Frame fileFrame={fileFrame} components={components} />
       </Rnd>
     </NoPanArea>
   );

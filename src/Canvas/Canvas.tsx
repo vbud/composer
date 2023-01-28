@@ -49,7 +49,7 @@ export const Canvas = ({ fileFrames, selectedFrameId }: CanvasProps) => {
         {Object.keys(fileFrames).map((frameId) => (
           <CanvasFrame
             key={frameId}
-            frameConfig={fileFrames[frameId]}
+            fileFrame={fileFrames[frameId]}
             components={components}
             selectedFrameId={selectedFrameId}
             scale={canvasPosition.zoom}

@@ -7,21 +7,23 @@ import RenderCode from '../RenderCode/RenderCode';
 
 import * as styles from './Frame.css';
 
-export interface FrameProps {
-  frameConfig: FileFrame;
+export const Frame = ({
+  fileFrame,
+  components,
+}: {
+  fileFrame: FileFrame;
   components: Components;
-}
-export const Frame = ({ frameConfig, components }: FrameProps) => {
+}) => {
   const lastValidCompiledRef = useRef<string | undefined>();
   const compiledCode = useMemo(() => {
     try {
-      const compiled = compileJsx(frameConfig.code) ?? undefined;
+      const compiled = compileJsx(fileFrame.code) ?? undefined;
       lastValidCompiledRef.current = compiled;
       return compiled;
     } catch {
       return lastValidCompiledRef.current;
     }
-  }, [frameConfig.code]);
+  }, [fileFrame.code]);
 
   return (
     <div className={styles.root}>
