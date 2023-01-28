@@ -22,3 +22,11 @@ export const frameName = style({
     },
   },
 });
+
+export const frame = style({
+  width: '100%',
+  height: '100%',
+  overflow: 'auto',
+  background: 'white',
+  color: 'black',
+});

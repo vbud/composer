@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { NoPanArea } from './ZoomableCanvas';
 import { Rnd } from 'react-rnd';
 
-import { Frame } from '../Frame/Frame';
+import { CompileAndRenderCode } from './CompileAndRenderCode';
 import {
   FileFrame,
   SelectedFrameId,
@@ -58,7 +58,7 @@ export const CanvasFrame = ({
   const canvasClientRect = useRef<DOMRect | null>(null);
   const moveInterval = useRef<MoveInterval | null>(null);
 
-  const { id, x, y, width, height } = fileFrame;
+  const { id, x, y, width, height, code } = fileFrame;
 
   const focusIfSelected = useCallback((node: Rnd) => {
     if (node && id === selectedFrameId) {
@@ -202,7 +202,9 @@ export const CanvasFrame = ({
         tabIndex={0} // make element focusable so it can handle keyboard events
       >
         <div className={styles.frameName}>{id}</div>
-        <Frame fileFrame={fileFrame} components={components} />
+        <div className={styles.frame}>
+          <CompileAndRenderCode code={code} components={components} />
+        </div>
       </Rnd>
     </NoPanArea>
   );
