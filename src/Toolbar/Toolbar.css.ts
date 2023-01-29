@@ -8,14 +8,15 @@ export const root = style({
   width: '100%',
   height: toolbarHeight - toolbarBorderThickness,
   display: 'flex',
-  alignItems: 'center',
+  justifyContent: 'space-between',
   color: colorPaletteVars.foreground.neutral,
   backgroundColor: colorPaletteVars.background.surface,
   borderBottom: `${toolbarBorderThickness}px solid ${colorPaletteVars.border.standard}`,
 });
 
-export const alignNextItemsRight = style({
-  marginLeft: 'auto',
+export const actions = style({
+  display: 'flex',
+  alignItems: 'center',
 });
 
 export const panel = style({

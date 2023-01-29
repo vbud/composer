@@ -15,6 +15,7 @@ export type FileId = string;
 
 export interface File {
   id: FileId;
+  name: string;
   canvasPosition: CanvasPosition;
   selectedFrameId: SelectedFrameId;
 }
@@ -48,16 +49,15 @@ interface StatusMessage {
 
 type ToolbarPanel = 'settings' | 'canvasZoomControl';
 
-export type SelectedFrameId = string | undefined;
+export type SelectedFrameId = string | null;
 
 export interface FileState {
-  /* persisted state */
   files: Files;
   fileFrames: FileFrames;
   canvasPosition: CanvasPosition;
   selectedFrameId: SelectedFrameId;
-  /* unpersisted state */
   activeFileId: FileId;
+  activeFileName: string;
   canvasViewport: ViewPort | null;
   editorView: EditorView | null;
   activeToolbarPanel?: ToolbarPanel;
@@ -197,7 +197,7 @@ const createReducer =
         return {
           ...state,
           fileFrames,
-          selectedFrameId: newFrameId,
+          selectedFrameId: null,
         };
       }
 
@@ -213,14 +213,14 @@ const createReducer =
           ...state.files,
           [state.activeFileId]: {
             ...state.files[state.activeFileId],
-            selectedFrameId: undefined,
+            selectedFrameId: null,
           },
         };
         store.setItem<FileState['files']>('files', files);
         return {
           ...state,
           fileFrames,
-          selectedFrameId: undefined,
+          selectedFrameId: null,
         };
       }
 
@@ -352,27 +352,24 @@ const createReducer =
     }
   };
 
-export const initialFile: Omit<File, 'id'> = {
-  canvasPosition: {
-    left: 0,
-    top: 0,
-    zoom: 1,
-  },
-  // TODO: use null instead
-  selectedFrameId: undefined,
-};
-
 const initialState: FileState = {
-  ...initialFile,
-  // This value is never actually used, we just do this to avoid having to make
-  // it an optional property.
-  activeFileId: '_',
   files: {},
   fileFrames: {},
   showSnippets: false,
   showCanvasOnly: false,
   editorView: null,
   canvasViewport: null,
+  canvasPosition: {
+    left: 0,
+    top: 0,
+    zoom: 1,
+  },
+  selectedFrameId: null,
+  // The below values are never actually used since we never load a File without
+  // loading it from the database. We just do this to avoid having to make them
+  // an optional property.
+  activeFileId: '_',
+  activeFileName: '_',
 };
 
 export const FileContext = createContext<[FileState, Dispatch<Action>]>([
@@ -400,12 +397,13 @@ export const FileContextProvider = ({
         `fileFrames for file id ${fileId} must exist in store`
       );
 
-      const { canvasPosition, selectedFrameId } = files[fileId];
+      const { canvasPosition, selectedFrameId, name } = files[fileId];
 
       dispatch({
         type: 'initialLoad',
         payload: {
           activeFileId: fileId,
+          activeFileName: name,
           files,
           canvasPosition,
           selectedFrameId,

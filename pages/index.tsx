@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { fileFramesStore, store } from 'src/stores';
-import { Files, FileFrames, initialFile } from 'src/contexts/FileContext';
+import { Files, FileFrames } from 'src/contexts/FileContext';
 import { Button } from 'src/Button/Button';
 
 import * as styles from '../pageStyles/Home.css';
@@ -44,7 +44,13 @@ export default function Home() {
                   ...files,
                   [id]: {
                     id,
-                    ...initialFile,
+                    name: 'Untitled',
+                    canvasPosition: {
+                      left: 0,
+                      top: 0,
+                      zoom: 1,
+                    },
+                    selectedFrameId: null,
                   },
                 };
 

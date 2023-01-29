@@ -1,4 +1,4 @@
-import { colorPaletteVars, vars } from '../../theme.css';
+import { colorPaletteVars, vars } from '../theme.css';
 import { style } from '@vanilla-extract/css';
 
 export const disabled = style({});

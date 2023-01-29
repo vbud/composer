@@ -32,7 +32,7 @@ export const Canvas = ({ fileFrames, selectedFrameId }: CanvasProps) => {
     <div
       ref={canvasRef}
       className={styles.root}
-      onMouseDown={() => dispatch({ type: 'selectFrame', payload: undefined })}
+      onMouseDown={() => dispatch({ type: 'selectFrame', payload: null })}
     >
       <Space
         onCreate={(viewport) => {
