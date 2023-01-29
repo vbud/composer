@@ -3,9 +3,10 @@ import React, { useContext, useRef } from 'react';
 import { snippets } from 'src/snippets';
 import { useClickOutside } from 'src/utils/useClickOutside';
 import { FileContext } from 'src/contexts/FileContext';
-import ToolbarItem from './ToolbarItem/ToolbarItem';
+import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem/ToolbarItem';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
 import ZoomControlPanel from '../ZoomControlPanel/ZoomControlPanel';
+import HomeIcon from '../icons/HomeIcon';
 import AddSnippetIcon from '../icons/AddSnippetIcon';
 import AddFrameIcon from '../icons/AddFrameIcon';
 import SettingsIcon from '../icons/SettingsIcon';
@@ -30,7 +31,10 @@ export default function Toolbar() {
 
   return (
     <div className={styles.root}>
-      <ToolbarItem
+      <ToolbarItemLink title="Home" data-testid="home" href="/">
+        <HomeIcon />
+      </ToolbarItemLink>
+      <ToolbarItemButton
         title={`Insert snippet (${
           navigator.platform.match('Mac') ? '\u2318' : 'Ctrl + '
         }K)`}
@@ -43,8 +47,8 @@ export default function Toolbar() {
         }}
       >
         <AddSnippetIcon />
-      </ToolbarItem>
-      <ToolbarItem
+      </ToolbarItemButton>
+      <ToolbarItemButton
         title="Add new frame to canvas"
         data-testid="addFrame"
         onClick={() => {
@@ -54,9 +58,9 @@ export default function Toolbar() {
         }}
       >
         <AddFrameIcon />
-      </ToolbarItem>
+      </ToolbarItemButton>
       <div className={styles.alignNextItemsRight} />
-      <ToolbarItem
+      <ToolbarItemButton
         title="Zoom level"
         onClick={() => {
           dispatch({
@@ -67,8 +71,8 @@ export default function Toolbar() {
         data-testid="canvasZoomLevel"
       >
         {Math.round(canvasPosition.zoom * 100)}%
-      </ToolbarItem>
-      <ToolbarItem
+      </ToolbarItemButton>
+      <ToolbarItemButton
         active={isSettingsOpen}
         title="Edit settings"
         onClick={() => {
@@ -79,7 +83,7 @@ export default function Toolbar() {
         }}
       >
         <SettingsIcon />
-      </ToolbarItem>
+      </ToolbarItemButton>
       {isOpen && (
         <div ref={panelRef} className={styles.panel}>
           {isSettingsOpen && <SettingsPanel />}

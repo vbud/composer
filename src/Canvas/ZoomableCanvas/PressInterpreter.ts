@@ -31,7 +31,7 @@ const POTENTIAL_TAP_BOUNDS_DEFAULT: ClientPixelUnit = 8;
  * press.
  */
 type DecidePressHandlingCallback = (
-  e: MouseEvent | TouchEvent,
+  _e: MouseEvent | TouchEvent,
   coordinates: PressEventCoordinates
 ) => PressHandlingOptions | undefined;
 
@@ -199,7 +199,7 @@ export class PressInterpreter {
   };
 
   private handlePressMove = (
-    e: MouseEvent | TouchEvent,
+    _e: MouseEvent | TouchEvent,
     coordinates: PressEventCoordinates
   ): 'release' | undefined => {
     if (
@@ -246,7 +246,7 @@ export class PressInterpreter {
   };
 
   private handlePressEnd = (
-    e: MouseEvent | TouchEvent,
+    _e: MouseEvent | TouchEvent,
     coordinates: PressEventCoordinates
   ) => {
     if (!this.currentConfig || this.currentConfig.ignorePressEntirely) {
@@ -276,7 +276,7 @@ export class PressInterpreter {
     this.reset();
   };
 
-  private handlePressCancel = (e: MouseEvent | TouchEvent) => {
+  private handlePressCancel = (_e: MouseEvent | TouchEvent) => {
     if (this.currentPressCapturedForHandler) {
       this.currentConfig?.onCapturePressCancelled?.();
     } else {

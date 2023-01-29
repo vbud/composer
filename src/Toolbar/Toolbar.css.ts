@@ -1,12 +1,12 @@
 import { style } from '@vanilla-extract/css';
 import { colorPaletteVars } from '../theme.css';
-import { toolbarItemHeight } from './ToolbarItem/ToolbarItem.css';
 
+export const toolbarHeight = 40;
 const toolbarBorderThickness = 1;
 
 export const root = style({
   width: '100%',
-  height: toolbarItemHeight,
+  height: toolbarHeight - toolbarBorderThickness,
   display: 'flex',
   alignItems: 'center',
   color: colorPaletteVars.foreground.neutral,
@@ -18,7 +18,6 @@ export const alignNextItemsRight = style({
   marginLeft: 'auto',
 });
 
-export const toolbarHeight = toolbarItemHeight + toolbarBorderThickness;
 export const panel = style({
   position: 'absolute',
   top: toolbarHeight,

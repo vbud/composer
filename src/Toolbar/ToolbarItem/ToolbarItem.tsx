@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import classnames from 'classnames';
+import Link from 'next/link';
 
 import * as styles from './ToolbarItem.css';
 
@@ -8,27 +9,35 @@ interface Props {
   title: string;
   active?: boolean;
   disabled?: boolean;
-  onClick: () => void;
   ['data-testid']?: string;
 }
 
-export default function ToolbarItem({
+interface ButtonProps extends Props {
+  onClick: () => void;
+}
+
+interface LinkProps extends Props {
+  href: string;
+}
+
+export function ToolbarItemButton({
   children,
   title,
   active = false,
   disabled = false,
   onClick,
   'data-testid': dataTestId,
-}: Props) {
+}: ButtonProps) {
   return (
     <button
+      type="button"
       data-testid={dataTestId}
-      className={classnames(styles.button, {
-        [styles.button_isActive]: active,
+      className={classnames(styles.root, {
+        [styles.active]: active,
         [styles.disabled]: disabled,
       })}
-      disabled={disabled}
       title={title}
+      disabled={disabled}
       onClick={(event) => {
         event.stopPropagation();
         onClick();
@@ -36,5 +45,28 @@ export default function ToolbarItem({
     >
       {children}
     </button>
+  );
+}
+
+export function ToolbarItemLink({
+  children,
+  title,
+  active = false,
+  disabled = false,
+  href,
+  'data-testid': dataTestId,
+}: LinkProps) {
+  return (
+    <Link
+      data-testid={dataTestId}
+      className={classnames(styles.root, {
+        [styles.active]: active,
+        [styles.disabled]: disabled,
+      })}
+      title={title}
+      href={href}
+    >
+      {children}
+    </Link>
   );
 }

@@ -180,8 +180,7 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   };
 
   private handleDecideHowToHandlePress = (
-    e: MouseEvent | TouchEvent,
-    coordinates: PressEventCoordinates
+    e: MouseEvent | TouchEvent
   ): PressHandlingOptions | undefined => {
     if (e.target instanceof HTMLElement) {
       const interactableId = getInteractableIdMostApplicableToElement(e.target);

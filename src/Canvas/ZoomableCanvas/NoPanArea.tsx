@@ -32,7 +32,7 @@ export class NoPanArea extends React.PureComponent<NoPanAreaProps> {
 
   private divRef: React.RefObject<HTMLDivElement> = React.createRef();
 
-  public constructor(props: NoPanAreaProps, context: SpaceContextType) {
+  public constructor(props: NoPanAreaProps) {
     super(props);
   }
 

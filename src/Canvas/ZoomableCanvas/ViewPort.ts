@@ -448,7 +448,7 @@ export class ViewPort {
     this.currentDesktopSafariGestureState = undefined;
   };
 
-  private handleHammerPanStart = (e: HammerInput) => {
+  private handleHammerPanStart = () => {
     if (this.options?.debugEvents) {
       console.log(`ViewPort:handleHammerPanStart`);
     }
@@ -506,14 +506,14 @@ export class ViewPort {
     this.currentHammerGestureState = undefined;
   };
 
-  private handleHammerPanCancel = (e: HammerInput) => {
+  private handleHammerPanCancel = () => {
     if (this.options?.debugEvents) {
       console.log(`ViewPort:handleHammerPanCancel`);
     }
     this.currentHammerGestureState = undefined;
   };
 
-  private handleHammerPinchStart = (e: HammerInput) => {
+  private handleHammerPinchStart = () => {
     if (this.options?.debugEvents) {
       console.log(`ViewPort:handleHammerPinchStart`);
     }
@@ -571,7 +571,7 @@ export class ViewPort {
     this.currentHammerGestureState = undefined;
   };
 
-  private handleHammerPinchCancel = (e: HammerInput) => {
+  private handleHammerPinchCancel = () => {
     if (this.options?.debugEvents) {
       console.log(`ViewPort:handleHammerPinchCancel`);
     }
