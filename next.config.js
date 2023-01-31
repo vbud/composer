@@ -9,6 +9,7 @@ const withVanillaExtract = createVanillaExtractPlugin();
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  pageExtensions: ['page.tsx'],
   webpack: (config) => {
     config.module.exprContextCritical = false;
     config.plugins.unshift(

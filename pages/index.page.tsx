@@ -9,7 +9,7 @@ import { Button } from 'src/Button/Button';
 import { Text } from 'src/Text/Text';
 import { Heading } from 'src/Heading/Heading';
 
-import * as styles from '../pageStyles/Home.css';
+import * as styles from './Home.css';
 
 export default function Home() {
   const [files, setFiles] = useState<Files | null>(null);

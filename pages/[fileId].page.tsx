@@ -19,7 +19,7 @@ import { formatAndInsert } from 'src/utils/formatting';
 import { isValidLocation } from 'src/utils/cursor';
 import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
 
-import * as styles from '../pageStyles/File.css';
+import * as styles from './File.css';
 
 function File() {
   const [
