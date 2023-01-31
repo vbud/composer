@@ -30,8 +30,8 @@ export default function Home() {
 
       <Heading level="1">Files</Heading>
       <div className={styles.files}>
-        {files === null ? (
-          <Text size="large">You have no files 😢.</Text>
+        {files === null || Object.keys(files).length === 0 ? (
+          <Text size="large">😢 You have no files.</Text>
         ) : (
           Object.entries(files).map(([fileId, { name }]) => (
             <div key={fileId} className={styles.fileLink}>

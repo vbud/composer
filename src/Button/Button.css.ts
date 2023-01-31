@@ -51,9 +51,9 @@ export const base = style([
   },
 ]);
 
-export const positive = style({
+export const critical = style({
   vars: {
-    [highlightColor]: `${colorPaletteVars.foreground.positive} !important`,
+    [highlightColor]: `${colorPaletteVars.foreground.critical} !important`,
   },
   borderColor: highlightColor,
 });

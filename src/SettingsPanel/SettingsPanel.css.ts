@@ -8,9 +8,13 @@ export const fieldset = style({
   padding: 0,
 });
 
-export const radioContainer = style({
+export const colorSchemeRadioContainer = style({
   display: 'flex',
-  paddingTop: vars.space.medium,
+  marginTop: vars.space.medium,
+});
+
+export const fileSettingsContainer = style({
+  marginTop: vars.space.large,
 });
 
 export const realRadio = style({

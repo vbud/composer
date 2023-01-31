@@ -82,6 +82,7 @@ type Action =
     }
   | { type: 'initializeCanvas'; payload: { canvasViewport: ViewPort } }
   | { type: 'renameFile'; payload: string }
+  | { type: 'deleteFile' }
   | { type: 'addFrame' }
   | {
       type: 'moveFrame';
@@ -180,6 +181,19 @@ const createReducer =
         };
         store.setItem<FileState['files']>('files', files);
         return { ...state, activeFileName: name };
+      }
+
+      case 'deleteFile': {
+        const files = {
+          ...state.files,
+        };
+        delete files[state.activeFileId];
+        store.setItem<FileState['files']>('files', files);
+
+        return {
+          ...state,
+          files,
+        };
       }
 
       case 'addFrame': {

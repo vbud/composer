@@ -10,6 +10,9 @@ import ColorModeLightIcon from '../icons/ColorModeLightIcon';
 import ColorModeDarkIcon from '../icons/ColorModeDarkIcon';
 
 import * as styles from './SettingsPanel.css';
+import { Button } from 'src/Button/Button';
+import { FileContext } from 'src/contexts/FileContext';
+import { useRouter } from 'next/router';
 
 const colorModeIcon: Record<ColorScheme, ReactElement> = {
   light: <ColorModeLightIcon />,
@@ -18,16 +21,27 @@ const colorModeIcon: Record<ColorScheme, ReactElement> = {
 };
 
 export default function SettingsPanel() {
-  const [{ colorScheme }, dispatch] = useContext(AppContext);
+  const [{ colorScheme }, appDispatch] = useContext(AppContext);
+  const [_, fileDispatch] = useContext(FileContext);
+  const router = useRouter();
+
+  const confirmDelete = () => {
+    if (window.confirm('Are you sure you want to delete this file?')) {
+      fileDispatch({
+        type: 'deleteFile',
+      });
+      router.push('/');
+    }
+  };
 
   return (
     <ToolbarPanel data-testid="settings-panel">
       <Stack space="large">
         <fieldset className={styles.fieldset}>
           <legend>
-            <Heading level="3">Color Mode</Heading>
+            <Heading level="3">Color mode</Heading>
           </legend>
-          <div className={styles.radioContainer}>
+          <div className={styles.colorSchemeRadioContainer}>
             {['System', 'Light', 'Dark'].map((option) => (
               <div key={option}>
                 <input
@@ -38,7 +52,7 @@ export default function SettingsPanel() {
                   title={option}
                   checked={option.toLowerCase() === colorScheme}
                   onChange={() =>
-                    dispatch({
+                    appDispatch({
                       type: 'updateColorScheme',
                       payload: option.toLowerCase() as ColorScheme,
                     })
@@ -58,6 +72,14 @@ export default function SettingsPanel() {
             ))}
           </div>
         </fieldset>
+        <div>
+          <Heading level="3">File settings</Heading>
+          <div className={styles.fileSettingsContainer}>
+            <Button tone="critical" onClick={confirmDelete}>
+              Delete file
+            </Button>
+          </div>
+        </div>
       </Stack>
     </ToolbarPanel>
   );
