@@ -26,7 +26,6 @@ export default function Home() {
     <div className={styles.root}>
       <Head>
         <title>composer</title>
-        <meta name="description" content="Design + engineering = ❤️" />
       </Head>
 
       <Heading level="1">Files</Heading>

@@ -23,7 +23,14 @@ import * as styles from '../pageStyles/File.css';
 
 function File() {
   const [
-    { editorView, showSnippets, showCanvasOnly, selectedFrameId, fileFrames },
+    {
+      editorView,
+      showSnippets,
+      showCanvasOnly,
+      selectedFrameId,
+      activeFileName,
+      fileFrames,
+    },
     fileDispatch,
   ] = useContext(FileContext);
   const [{ editorWidth }, appDispatch] = useContext(AppContext);
@@ -80,8 +87,7 @@ function File() {
   return (
     <div className={styles.root}>
       <Head>
-        <title>composer</title>
-        <meta name="description" content="Design + engineering = ❤️" />
+        <title>{activeFileName} – composer</title>
       </Head>
 
       {!showCanvasOnly && <Toolbar />}
