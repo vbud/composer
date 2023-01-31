@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 
 export function useClickOutside(
   ref: React.RefObject<HTMLElement>,
-  handler: () => void
+  handler:
+    | (() => void)
+    | { onClickOutside: () => void; onEscapeKey: () => void }
 ) {
   useEffect(() => {
     if (!ref || !ref.current) return;
@@ -12,7 +14,7 @@ export function useClickOutside(
         return;
       }
 
-      handler();
+      typeof handler === 'function' ? handler() : handler.onClickOutside();
     };
 
     const keyDownListener = (event: KeyboardEvent) => {
@@ -20,7 +22,8 @@ export function useClickOutside(
 
       if (event.code === 'Escape') {
         event.preventDefault();
-        handler();
+
+        typeof handler === 'function' ? handler() : handler.onEscapeKey();
       }
     };
 

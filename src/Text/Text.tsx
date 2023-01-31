@@ -9,6 +9,7 @@ interface Props {
   tone?: 'neutral' | 'critical';
   as?: ElementType;
   truncate?: boolean;
+  className?: string;
   children: ReactNode;
 }
 
@@ -18,15 +19,22 @@ export const Text = ({
   weight = 'regular',
   tone = 'neutral',
   truncate = false,
+  className,
   children,
 }: Props) =>
   React.createElement(
     component,
     {
-      className: classnames(styles.base, styles[size], styles[tone], {
-        [styles.strong]: weight === 'strong',
-        [styles.truncate]: truncate,
-      }),
+      className: classnames(
+        className,
+        styles.base,
+        styles[size],
+        styles[tone],
+        {
+          [styles.strong]: weight === 'strong',
+          [styles.truncate]: truncate,
+        }
+      ),
     },
     children
   );

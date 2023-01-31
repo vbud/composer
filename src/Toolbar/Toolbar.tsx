@@ -15,10 +15,8 @@ import FileName from './FileName';
 import * as styles from './Toolbar.css';
 
 export default function Toolbar() {
-  const [
-    { activeToolbarPanel, editorView, canvasPosition, activeFileName },
-    dispatch,
-  ] = useContext(FileContext);
+  const [{ activeToolbarPanel, editorView, canvasPosition }, dispatch] =
+    useContext(FileContext);
 
   const clickOutsideHandler = () => {
     dispatch({ type: 'closeToolbar' });
@@ -64,7 +62,7 @@ export default function Toolbar() {
           <AddFrameIcon />
         </ToolbarItemButton>
       </div>
-      <FileName name={activeFileName} />
+      <FileName />
       <div className={styles.actions}>
         <ToolbarItemButton
           title="Zoom level"

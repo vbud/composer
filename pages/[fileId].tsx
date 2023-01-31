@@ -116,21 +116,10 @@ function File() {
         <SnippetBrowser
           ref={snippetsRef}
           onSelectSnippet={(snippet) => {
-            if (editorView) {
+            if (editorView && selectedFrameId !== null) {
               fileDispatch({ type: 'toggleSnippets' });
 
               setTimeout(() => editorView.focus(), 0);
-
-              if (!selectedFrameId) {
-                fileDispatch({
-                  type: 'displayStatusMessage',
-                  payload: {
-                    message: 'Select a frame before adding a snippet',
-                    tone: 'critical',
-                  },
-                });
-                return;
-              }
 
               const { code, cursorPosition } = fileFrames[selectedFrameId];
               const validCursorPosition = isValidLocation({

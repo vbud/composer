@@ -45,6 +45,7 @@ export type FileFrames = Record<FrameId, FileFrame>;
 interface StatusMessage {
   message: string;
   tone: 'positive' | 'critical';
+  dismissable?: boolean;
 }
 
 type ToolbarPanel = 'settings' | 'canvasZoomControl';
@@ -80,6 +81,7 @@ type Action =
       payload: UpdateEditorStatePayload;
     }
   | { type: 'initializeCanvas'; payload: { canvasViewport: ViewPort } }
+  | { type: 'renameFile'; payload: string }
   | { type: 'addFrame' }
   | {
       type: 'moveFrame';
@@ -164,6 +166,20 @@ const createReducer =
           ...state,
           canvasViewport,
         };
+      }
+
+      case 'renameFile': {
+        const name = action.payload;
+
+        const files = {
+          ...state.files,
+          [state.activeFileId]: {
+            ...state.files[state.activeFileId],
+            name,
+          },
+        };
+        store.setItem<FileState['files']>('files', files);
+        return { ...state, activeFileName: name };
       }
 
       case 'addFrame': {
