@@ -14,7 +14,7 @@ import { CodeEditor } from 'src/CodeEditor/CodeEditor';
 import { Canvas } from 'src/Canvas/Canvas';
 import { Text } from 'src/Text/Text';
 import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
-import { useClickOutside } from 'src/utils/useClickOutside';
+import { useInteractOutside } from 'src/utils/useInteractOutside';
 import { formatAndInsert } from 'src/utils/formatting';
 import { isValidLocation } from 'src/utils/cursor';
 import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
@@ -61,11 +61,10 @@ function File() {
     });
   }, 1);
 
-  const clickOutsideHandler = () => {
-    fileDispatch({ type: 'toggleSnippets' });
-  };
   const snippetsRef = useRef<HTMLDivElement>(null);
-  useClickOutside(snippetsRef, clickOutsideHandler);
+  useInteractOutside(snippetsRef, () => {
+    fileDispatch({ type: 'toggleSnippets' });
+  });
 
   const editor = (
     <div className={styles.editorContainer}>

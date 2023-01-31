@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 
 import { snippets } from 'src/snippets';
-import { useClickOutside } from 'src/utils/useClickOutside';
+import { useInteractOutside } from 'src/utils/useInteractOutside';
 import { FileContext } from 'src/contexts/FileContext';
 import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
@@ -18,11 +18,10 @@ export default function Toolbar() {
   const [{ activeToolbarPanel, editorView, canvasPosition }, dispatch] =
     useContext(FileContext);
 
-  const clickOutsideHandler = () => {
-    dispatch({ type: 'closeToolbar' });
-  };
   const panelRef = useRef<HTMLDivElement>(null);
-  useClickOutside(panelRef, clickOutsideHandler);
+  useInteractOutside(panelRef, () => {
+    dispatch({ type: 'closeToolbar' });
+  });
 
   const isOpen = Boolean(activeToolbarPanel);
   const isSettingsOpen = activeToolbarPanel === 'settings';

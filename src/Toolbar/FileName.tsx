@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef, useState } from 'react';
 
 import { FileContext } from 'src/contexts/FileContext';
-import { useClickOutside } from 'src/utils/useClickOutside';
+import { useInteractOutside } from 'src/utils/useInteractOutside';
 import { Text } from 'src/Text/Text';
 
 import * as styles from './FileName.css';
@@ -40,7 +40,7 @@ export default function FileName() {
   }, [editedName, revertName, dispatch]);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  useClickOutside(inputRef, {
+  useInteractOutside(inputRef, {
     onClickOutside: saveName,
     onEscapeKey: revertName,
   });
