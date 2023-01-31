@@ -7,16 +7,22 @@ const toolbarBorderThickness = 1;
 export const root = style({
   width: '100%',
   height: toolbarHeight - toolbarBorderThickness,
-  display: 'flex',
-  justifyContent: 'space-between',
+  display: 'grid',
+  gridTemplateColumns: '1fr 300px 1fr',
   color: colorPaletteVars.foreground.neutral,
   backgroundColor: colorPaletteVars.background.surface,
   borderBottom: `${toolbarBorderThickness}px solid ${colorPaletteVars.border.standard}`,
 });
 
-export const actions = style({
+export const actionsLeft = style({
   display: 'flex',
   alignItems: 'center',
+});
+
+export const actionsRight = style({
+  display: 'flex',
+  alignItems: 'center',
+  marginLeft: 'auto',
 });
 
 export const panel = style({

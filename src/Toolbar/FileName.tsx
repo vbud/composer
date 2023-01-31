@@ -21,13 +21,7 @@ export default function FileName() {
   }, [activeFileName]);
 
   const saveName = useCallback(() => {
-    if (editedName.length > 0) {
-      dispatch({
-        type: 'renameFile',
-        payload: editedName,
-      });
-      setIsEditing(false);
-    } else {
+    if (editedName.length === 0) {
       dispatch({
         type: 'displayStatusMessage',
         payload: {
@@ -36,6 +30,21 @@ export default function FileName() {
         },
       });
       revertName();
+    } else if (editedName.length > 40) {
+      dispatch({
+        type: 'displayStatusMessage',
+        payload: {
+          message: 'Filename cannot be more than 40 characters long',
+          tone: 'critical',
+        },
+      });
+      revertName();
+    } else {
+      dispatch({
+        type: 'renameFile',
+        payload: editedName,
+      });
+      setIsEditing(false);
     }
   }, [editedName, revertName, dispatch]);
 

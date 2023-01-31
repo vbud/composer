@@ -5,6 +5,7 @@ import { vars } from 'src/theme.css';
 export const root = style({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
 });
 
 export const input = style({

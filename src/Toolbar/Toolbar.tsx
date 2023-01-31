@@ -31,7 +31,7 @@ export default function Toolbar() {
 
   return (
     <div className={styles.root}>
-      <div className={styles.actions}>
+      <div className={styles.actionsLeft}>
         <ToolbarItemLink title="Home" data-testid="home" href="/">
           <HomeIcon />
         </ToolbarItemLink>
@@ -62,7 +62,7 @@ export default function Toolbar() {
         </ToolbarItemButton>
       </div>
       <FileName />
-      <div className={styles.actions}>
+      <div className={styles.actionsRight}>
         <ToolbarItemButton
           title="Zoom level"
           onClick={() => {
