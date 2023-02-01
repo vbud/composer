@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+
+import { useStore } from 'src/store';
 import { darkModeDataAttribute } from 'src/globals.css';
 
 export type ColorScheme = 'light' | 'dark' | 'system';
@@ -8,7 +10,9 @@ const applyColorScheme = (colorScheme: Exclude<ColorScheme, 'system'>) => {
   ](darkModeDataAttribute, '');
 };
 
-export function useColorScheme(colorScheme: ColorScheme) {
+export function useColorScheme() {
+  const colorScheme = useStore((s) => s.colorScheme);
+
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
 

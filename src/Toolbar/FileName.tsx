@@ -1,52 +1,46 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
-import { FileContext } from 'src/contexts/FileContext';
+import { useStore, shallow, FileId } from 'src/store';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
 import { Text } from 'src/Text/Text';
 
 import * as styles from './FileName.css';
 
-export default function FileName() {
-  const [{ activeFileName }, dispatch] = useContext(FileContext);
+export default function FileName({ fileId }: { fileId: FileId }) {
+  const [name, renameFile, displayStatusMessage] = useStore(
+    (s) => [s.files[fileId].name, s.renameFile, s.displayStatusMessage],
+    shallow
+  );
 
-  const [editedName, setEditedName] = useState(activeFileName);
+  const [editedName, setEditedName] = useState(name);
   const [sizerWidth, setSizerWidth] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
 
   const sizerSpanRef = useRef<HTMLSpanElement>(null);
 
   const revertName = useCallback(() => {
-    setEditedName(activeFileName);
+    setEditedName(name);
     setIsEditing(false);
-  }, [activeFileName]);
+  }, [name]);
 
   const saveName = useCallback(() => {
     if (editedName.length === 0) {
-      dispatch({
-        type: 'displayStatusMessage',
-        payload: {
-          message: 'Filename cannot be empty',
-          tone: 'critical',
-        },
+      displayStatusMessage({
+        message: 'Filename cannot be empty',
+        tone: 'critical',
       });
       revertName();
     } else if (editedName.length > 40) {
-      dispatch({
-        type: 'displayStatusMessage',
-        payload: {
-          message: 'Filename cannot be more than 40 characters long',
-          tone: 'critical',
-        },
+      displayStatusMessage({
+        message: 'Filename cannot be more than 40 characters long',
+        tone: 'critical',
       });
       revertName();
     } else {
-      dispatch({
-        type: 'renameFile',
-        payload: editedName,
-      });
+      renameFile(fileId, editedName);
       setIsEditing(false);
     }
-  }, [editedName, revertName, dispatch]);
+  }, [fileId, editedName, revertName, displayStatusMessage, renameFile]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   useInteractOutside(inputRef, {
@@ -89,7 +83,7 @@ export default function FileName() {
             setIsEditing(true);
           }}
         >
-          <Text>{activeFileName}</Text>
+          <Text>{name}</Text>
         </div>
       )}
     </div>

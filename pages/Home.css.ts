@@ -16,7 +16,7 @@ export const files = style({
 });
 
 export const fileLink = style({
-  marginTop: 16,
+  marginTop: 8,
 
   selectors: {
     '&:first-child': {

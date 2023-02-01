@@ -1,8 +1,8 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 
+import { useStore, shallow, FileId } from 'src/store';
 import { snippets } from 'src/snippets';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
-import { FileContext } from 'src/contexts/FileContext';
 import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
 import ZoomControlPanel from '../ZoomControlPanel/ZoomControlPanel';
@@ -14,14 +14,30 @@ import FileName from './FileName';
 
 import * as styles from './Toolbar.css';
 
-export default function Toolbar() {
-  const [{ activeToolbarPanel, editorView, canvasPosition }, dispatch] =
-    useContext(FileContext);
+export default function Toolbar({ fileId }: { fileId: FileId }) {
+  const [
+    activeToolbarPanel,
+    selectedFrameId,
+    canvasPosition,
+    openToolbarPanel,
+    closeToolbarPanel,
+    toggleShowSnippets,
+    createFrame,
+  ] = useStore(
+    (s) => [
+      s.activeToolbarPanel,
+      s.files[fileId].selectedFrameId,
+      s.files[fileId].canvasPosition,
+      s.openToolbarPanel,
+      s.closeToolbarPanel,
+      s.toggleShowSnippets,
+      s.createFrame,
+    ],
+    shallow
+  );
 
   const panelRef = useRef<HTMLDivElement>(null);
-  useInteractOutside(panelRef, () => {
-    dispatch({ type: 'closeToolbar' });
-  });
+  useInteractOutside(panelRef, () => closeToolbarPanel());
 
   const isOpen = Boolean(activeToolbarPanel);
   const isSettingsOpen = activeToolbarPanel === 'settings';
@@ -39,12 +55,10 @@ export default function Toolbar() {
           title={`Insert snippet (${
             navigator.platform.match('Mac') ? '\u2318' : 'Ctrl + '
           }K)`}
-          disabled={!editorView || !hasSnippets}
+          disabled={selectedFrameId === null || !hasSnippets}
           data-testid="toggleSnippets"
           onClick={() => {
-            dispatch({
-              type: 'toggleSnippets',
-            });
+            toggleShowSnippets();
           }}
         >
           <AddSnippetIcon />
@@ -53,23 +67,18 @@ export default function Toolbar() {
           title="Add new frame to canvas"
           data-testid="addFrame"
           onClick={() => {
-            dispatch({
-              type: 'addFrame',
-            });
+            createFrame(fileId);
           }}
         >
           <AddFrameIcon />
         </ToolbarItemButton>
       </div>
-      <FileName />
+      <FileName fileId={fileId} />
       <div className={styles.actionsRight}>
         <ToolbarItemButton
           title="Zoom level"
           onClick={() => {
-            dispatch({
-              type: 'toggleToolbar',
-              payload: { panel: 'canvasZoomControl' },
-            });
+            openToolbarPanel('canvasZoomControl');
           }}
           data-testid="canvasZoomLevel"
         >
@@ -79,10 +88,7 @@ export default function Toolbar() {
           active={isSettingsOpen}
           title="Edit settings"
           onClick={() => {
-            dispatch({
-              type: 'toggleToolbar',
-              payload: { panel: 'settings' },
-            });
+            openToolbarPanel('settings');
           }}
         >
           <SettingsIcon />
@@ -90,7 +96,7 @@ export default function Toolbar() {
       </div>
       {isOpen && (
         <div ref={panelRef} className={styles.panel}>
-          {isSettingsOpen && <SettingsPanel />}
+          {isSettingsOpen && <SettingsPanel fileId={fileId} />}
           {isZoomControlOpen && <ZoomControlPanel />}
         </div>
       )}

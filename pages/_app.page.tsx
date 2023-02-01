@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
 
 import AppErrorBoundary from 'src/AppErrorBoundary';
-import { AppContextProvider } from 'src/contexts/AppContext';
+import { useColorScheme } from 'src/utils/colorScheme';
 
 import 'src/globals.css';
 
-const Wrapper = (props: { children: React.ReactNode }) => (
-  <React.Fragment>{props.children}</React.Fragment>
-);
+// Everything that happens in this component and its descendants will not render
+// on the server, meaning, for example, that you can rely on document and window
+// being available.
+function NonSSRApp({ children }: { children: ReactElement }) {
+  useColorScheme();
 
-const NonSSRWrapper = dynamic(() => Promise.resolve(Wrapper), {
+  return <AppErrorBoundary>{children}</AppErrorBoundary>;
+}
+
+const NonSSRWrapper = dynamic(() => Promise.resolve(NonSSRApp), {
   ssr: false,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <NonSSRWrapper>
-      <AppErrorBoundary>
-        <AppContextProvider>
-          <Component {...pageProps} />
-        </AppContextProvider>
-      </AppErrorBoundary>
+      <Component {...pageProps} />
     </NonSSRWrapper>
   );
 }

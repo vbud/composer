@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
-import { FileContext } from 'src/contexts/FileContext';
+
+import { useStore, shallow } from 'src/store';
 import { Text } from '../Text/Text';
 import DismissIcon from '../icons/DismissIcon';
 
@@ -9,18 +10,22 @@ import * as styles from './StatusMessage.css';
 const statusMessageDuration = 3000;
 
 export const StatusMessage = () => {
-  const [{ statusMessage }, dispatch] = useContext(FileContext);
+  const [statusMessage, dismissStatusMessage] = useStore(
+    (s) => [s.statusMessage, s.dismissStatusMessage],
+    shallow
+  );
+
   const cleanupTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const { tone, message, dismissable = false } = statusMessage || {};
 
   const closeHandler = useCallback(() => {
-    dispatch({ type: 'dismissMessage' });
+    dismissStatusMessage();
 
     if (cleanupTimerRef.current) {
       clearTimeout(cleanupTimerRef.current);
     }
-  }, [dispatch]);
+  }, [dismissStatusMessage]);
 
   useEffect(() => {
     if (statusMessage) {
@@ -30,7 +35,7 @@ export const StatusMessage = () => {
 
       cleanupTimerRef.current = setTimeout(closeHandler, statusMessageDuration);
     }
-  }, [closeHandler, dispatch, statusMessage]);
+  }, [closeHandler, statusMessage]);
 
   return statusMessage ? (
     <div

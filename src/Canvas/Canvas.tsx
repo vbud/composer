@@ -1,30 +1,39 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Space } from './ZoomableCanvas';
 import { useDebouncedCallback } from 'use-debounce';
 
-import {
-  FileFrames,
-  SelectedFrameId,
-  FileContext,
-} from 'src/contexts/FileContext';
-import { components } from 'src/utils/components';
+import { useStore, shallow, FileId } from 'src/store';
 import { CanvasFrame } from './CanvasFrame';
 
 import * as styles from './Canvas.css';
 
-interface CanvasProps {
-  fileFrames: FileFrames;
-  selectedFrameId: SelectedFrameId;
-}
-export const Canvas = ({ fileFrames, selectedFrameId }: CanvasProps) => {
-  const [{ canvasPosition }, dispatch] = useContext(FileContext);
+export const Canvas = ({ fileId }: { fileId: FileId }) => {
+  const [
+    canvasPosition,
+    frames,
+    selectedFrameId,
+    saveCanvasPosition,
+    selectFrame,
+    initializeCanvas,
+  ] = useStore(
+    (s) => [
+      s.files[fileId].canvasPosition,
+      s.files[fileId].frames,
+      s.files[fileId].selectedFrameId,
+      s.saveCanvasPosition,
+      s.selectFrame,
+      s.initializeCanvas,
+    ],
+    shallow
+  );
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const saveCanvasPosition = useDebouncedCallback((vp) => {
-    dispatch({
-      type: 'saveCanvasPosition',
-      payload: { left: vp.left, top: vp.top, zoom: vp.zoomFactor },
+  const saveCanvasPositionDebounced = useDebouncedCallback((vp) => {
+    saveCanvasPosition(fileId, {
+      left: vp.left,
+      top: vp.top,
+      zoom: vp.zoomFactor,
     });
   }, 50);
 
@@ -32,27 +41,25 @@ export const Canvas = ({ fileFrames, selectedFrameId }: CanvasProps) => {
     <div
       ref={canvasRef}
       className={styles.root}
-      onMouseDown={() => dispatch({ type: 'selectFrame', payload: null })}
+      onMouseDown={() => selectFrame(fileId, null)}
     >
       <Space
         onCreate={(viewport) => {
-          dispatch({
-            type: 'initializeCanvas',
-            payload: { canvasViewport: viewport },
-          });
+          initializeCanvas(viewport);
 
           const { left, top, zoom } = canvasPosition;
           viewport.camera.updateTopLeft(left, top, zoom);
         }}
-        onUpdated={saveCanvasPosition}
+        // TODO: use new onDestroy action once onDestroy prop is added
+        onUpdated={saveCanvasPositionDebounced}
       >
-        {Object.keys(fileFrames).map((frameId) => (
+        {Object.keys(frames).map((frameId) => (
           <CanvasFrame
             key={frameId}
-            fileFrame={fileFrames[frameId]}
-            components={components}
+            fileId={fileId}
             selectedFrameId={selectedFrameId}
-            scale={canvasPosition.zoom}
+            frame={frames[frameId]}
+            canvasPosition={canvasPosition}
             canvasEl={canvasRef.current}
           />
         ))}

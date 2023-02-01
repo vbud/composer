@@ -1,15 +1,13 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import classnames from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
 import { Resizable } from 're-resizable';
 
-import { FileContextProvider } from 'src/contexts/FileContext';
+import { useStore, shallow, File, initialEditorWidth } from 'src/store';
 import Toolbar from 'src/Toolbar/Toolbar';
 import { StatusMessage } from 'src/StatusMessage/StatusMessage';
-import { initialEditorWidth, AppContext } from 'src/contexts/AppContext';
-import { FileContext } from 'src/contexts/FileContext';
 import { CodeEditor } from 'src/CodeEditor/CodeEditor';
 import { Canvas } from 'src/Canvas/Canvas';
 import { Text } from 'src/Text/Text';
@@ -21,30 +19,42 @@ import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
 
 import * as styles from './File.css';
 
-function File() {
+// TODO: move state into children, hooks. This may simplify the wrapper too.
+function FilePage({ file }: { file: File }) {
+  const { id: fileId, name, selectedFrameId, frames } = file;
   const [
-    {
-      editorView,
-      showSnippets,
-      showCanvasOnly,
-      selectedFrameId,
-      activeFileName,
-      fileFrames,
-    },
-    fileDispatch,
-  ] = useContext(FileContext);
-  const [{ editorWidth }, appDispatch] = useContext(AppContext);
+    editorView,
+    editorWidth,
+    showSnippets,
+    showCanvasOnly,
+    toggleShowCanvasOnly,
+    toggleShowSnippets,
+    updateFrameEditorState,
+    updateEditorWidth,
+    displayStatusMessage,
+  ] = useStore(
+    (s) => [
+      s.editorView,
+      s.editorWidth,
+      s.showSnippets,
+      s.showCanvasOnly,
+      s.toggleShowCanvasOnly,
+      s.toggleShowSnippets,
+      s.updateFrameEditorState,
+      s.updateEditorWidth,
+      s.displayStatusMessage,
+    ],
+    shallow
+  );
 
   useEffect(() => {
     const keyDownListener = (e: KeyboardEvent) => {
       if (e.code === 'Backslash' && isMetaOrCtrlExclusivelyPressed(e)) {
         e.preventDefault();
-        fileDispatch({ type: 'toggleShowCanvasOnly' });
+        toggleShowCanvasOnly();
       } else if (e.code === 'KeyK' && isMetaOrCtrlExclusivelyPressed(e)) {
         e.preventDefault();
-        fileDispatch({
-          type: 'toggleSnippets',
-        });
+        toggleShowSnippets();
       }
     };
 
@@ -52,24 +62,17 @@ function File() {
     return () => {
       document.removeEventListener('keydown', keyDownListener);
     };
-  }, [fileDispatch, showCanvasOnly]);
+  }, [toggleShowCanvasOnly, toggleShowSnippets]);
 
-  const updateEditorWidth = useDebouncedCallback((width: number) => {
-    appDispatch({
-      type: 'updateEditorWidth',
-      payload: width,
-    });
-  }, 1);
+  const updateEditorWidthDebounced = useDebouncedCallback(updateEditorWidth, 1);
 
   const snippetsRef = useRef<HTMLDivElement>(null);
-  useInteractOutside(snippetsRef, () => {
-    fileDispatch({ type: 'toggleSnippets' });
-  });
+  useInteractOutside(snippetsRef, () => toggleShowSnippets());
 
   const editor = (
     <div className={styles.editorContainer}>
-      {selectedFrameId ? (
-        <CodeEditor frameId={selectedFrameId} />
+      {selectedFrameId !== null ? (
+        <CodeEditor fileId={fileId} frameId={selectedFrameId} />
       ) : (
         <div className={styles.emptyCodeEditor}>
           <Text>No frame selected.</Text>
@@ -86,10 +89,10 @@ function File() {
   return (
     <div className={styles.root}>
       <Head>
-        <title>{activeFileName} – composer</title>
+        <title>{name} – composer</title>
       </Head>
 
-      {!showCanvasOnly && <Toolbar />}
+      {!showCanvasOnly && <Toolbar fileId={fileId} />}
       <div className={styles.main}>
         <Resizable
           className={classnames(styles.resizeableContainer, {
@@ -100,7 +103,7 @@ function File() {
           minWidth={initialEditorWidth}
           maxWidth="80vw"
           onResize={(_event, _direction, { offsetWidth }) => {
-            updateEditorWidth(offsetWidth);
+            updateEditorWidthDebounced(offsetWidth);
           }}
           enable={{
             top: false,
@@ -115,30 +118,27 @@ function File() {
         >
           {editor}
         </Resizable>
-        <Canvas fileFrames={fileFrames} selectedFrameId={selectedFrameId} />
+        <Canvas fileId={fileId} />
       </div>
       {showSnippets && (
         <SnippetBrowser
           ref={snippetsRef}
           onSelectSnippet={(snippet) => {
             if (editorView && selectedFrameId !== null) {
-              fileDispatch({ type: 'toggleSnippets' });
+              toggleShowSnippets();
 
               setTimeout(() => editorView.focus(), 0);
 
-              const { code, cursorPosition } = fileFrames[selectedFrameId];
+              const { code, cursorPosition } = frames[selectedFrameId];
               const validCursorPosition = isValidLocation({
                 code,
                 cursor: cursorPosition,
               });
 
               if (!validCursorPosition) {
-                fileDispatch({
-                  type: 'displayStatusMessage',
-                  payload: {
-                    message: 'Cannot insert snippet at cursor',
-                    tone: 'critical',
-                  },
+                displayStatusMessage({
+                  message: 'Cannot insert snippet at cursor',
+                  tone: 'critical',
                 });
                 return;
               }
@@ -149,12 +149,9 @@ function File() {
                 snippet: snippet.code,
               });
 
-              fileDispatch({
-                type: 'updateEditorState',
-                payload: {
-                  code: result.code,
-                  cursorPosition: result.cursor,
-                },
+              updateFrameEditorState(fileId, selectedFrameId, {
+                code: result.code,
+                cursorPosition: result.cursor,
               });
             }
           }}
@@ -165,15 +162,22 @@ function File() {
   );
 }
 
-export default function FileContainer() {
+export default function FilePageWrapper() {
   const router = useRouter();
   const { fileId } = router.query;
 
-  return (
-    typeof fileId === 'string' && (
-      <FileContextProvider fileId={fileId}>
-        <File />
-      </FileContextProvider>
-    )
+  const file = useStore((s) =>
+    typeof fileId === 'string' ? s.files[fileId] : undefined
   );
+
+  // Render nothing if a file does not exist for the specified fileId
+  if (file === undefined) {
+    // When we replace this with a "file not found" page in the future, we will
+    // also need to handle the edge case of deleting a file. There is a brief
+    // possible state where the file does not exist because it has been deleted,
+    // and the router has not rendered the home page yet.
+    return null;
+  }
+
+  return <FilePage file={file} />;
 }

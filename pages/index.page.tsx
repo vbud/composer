@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import { fileFramesStore, store } from 'src/stores';
-import { Files, FileFrames } from 'src/contexts/FileContext';
+import { useStore, shallow } from 'src/store';
 import { Button } from 'src/Button/Button';
 import { Text } from 'src/Text/Text';
 import { Heading } from 'src/Heading/Heading';
@@ -12,15 +11,8 @@ import { Heading } from 'src/Heading/Heading';
 import * as styles from './Home.css';
 
 export default function Home() {
-  const [files, setFiles] = useState<Files | null>(null);
-
   const router = useRouter();
-
-  useEffect(() => {
-    store.getItem<Files>('files').then((files) => {
-      files ? setFiles(files) : setFiles({});
-    });
-  }, []);
+  const [files, createFile] = useStore((s) => [s.files, s.createFile], shallow);
 
   return (
     <div className={styles.root}>
@@ -46,27 +38,8 @@ export default function Home() {
       <div>
         <Button
           onClick={() => {
-            const id = crypto.randomUUID();
-
-            const newFiles = {
-              ...files,
-              [id]: {
-                id,
-                name: 'Untitled',
-                canvasPosition: {
-                  left: 0,
-                  top: 0,
-                  zoom: 1,
-                },
-                selectedFrameId: null,
-              },
-            };
-
-            setFiles(newFiles);
-            store.setItem<Files>('files', newFiles);
-            fileFramesStore.setItem<FileFrames>(id, {});
-
-            router.push(id);
+            const newFileId = createFile();
+            router.push(newFileId);
           }}
         >
           New file

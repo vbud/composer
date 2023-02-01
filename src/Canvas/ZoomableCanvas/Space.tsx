@@ -171,9 +171,7 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
         undefined;
 
       // Suppress the drag _unless_ it is within a NoPanArea, then let it happen.
-      if (interactable && interactable instanceof NoPanArea) {
-        // Intentionally do nothing
-      } else {
+      if (!(interactable && interactable instanceof NoPanArea)) {
         e.preventDefault();
       }
     }
@@ -214,6 +212,7 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   private setOuterDivRefAndCreateViewPort = async (
     node: HTMLDivElement | null
   ) => {
+    // TODO: remove this assuming it doesn't break anything? Then I can add an onDestroy prop?
     this.destroyViewPort();
 
     if (node) {

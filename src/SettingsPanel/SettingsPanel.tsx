@@ -1,18 +1,18 @@
-import React, { useContext, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
+import { useRouter } from 'next/router';
+
+import { useStore, shallow, FileId } from 'src/store';
 import { Heading } from '../Heading/Heading';
 import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
-import { AppContext } from 'src/contexts/AppContext';
 import { ColorScheme } from 'src/utils/colorScheme';
 import { Stack } from '../Stack/Stack';
+import { Button } from 'src/Button/Button';
 
 import ColorModeSystemIcon from '../icons/ColorModeSystemIcon';
 import ColorModeLightIcon from '../icons/ColorModeLightIcon';
 import ColorModeDarkIcon from '../icons/ColorModeDarkIcon';
 
 import * as styles from './SettingsPanel.css';
-import { Button } from 'src/Button/Button';
-import { FileContext } from 'src/contexts/FileContext';
-import { useRouter } from 'next/router';
 
 const colorModeIcon: Record<ColorScheme, ReactElement> = {
   light: <ColorModeLightIcon />,
@@ -20,19 +20,22 @@ const colorModeIcon: Record<ColorScheme, ReactElement> = {
   system: <ColorModeSystemIcon />,
 };
 
-export default function SettingsPanel() {
-  const [{ colorScheme }, appDispatch] = useContext(AppContext);
-  const [_, fileDispatch] = useContext(FileContext);
+export default function SettingsPanel({ fileId }: { fileId: FileId }) {
+  const [colorScheme, deleteFile, updateColorScheme] = useStore(
+    (s) => [s.colorScheme, s.deleteFile, s.updateColorScheme],
+    shallow
+  );
+
   const router = useRouter();
 
   const confirmDelete = () => {
     if (window.confirm('Are you sure you want to delete this file?')) {
-      fileDispatch({
-        type: 'deleteFile',
-      });
       router.push('/');
+      deleteFile(fileId);
     }
   };
+
+  const inputIdPrefix = 'colorScheme_';
 
   return (
     <ToolbarPanel data-testid="settings-panel">
@@ -42,30 +45,25 @@ export default function SettingsPanel() {
             <Heading level="3">Color mode</Heading>
           </legend>
           <div className={styles.colorSchemeRadioContainer}>
-            {['System', 'Light', 'Dark'].map((option) => (
+            {(['system', 'light', 'dark'] as const).map((option) => (
               <div key={option}>
                 <input
                   type="radio"
                   name="colorScheme"
-                  id={`colorScheme${option}`}
-                  value={option.toLowerCase()}
-                  title={option}
-                  checked={option.toLowerCase() === colorScheme}
-                  onChange={() =>
-                    appDispatch({
-                      type: 'updateColorScheme',
-                      payload: option.toLowerCase() as ColorScheme,
-                    })
-                  }
+                  id={`${inputIdPrefix}${option}`}
+                  value={option}
+                  title={option.toLocaleUpperCase()}
+                  checked={option === colorScheme}
+                  onChange={() => updateColorScheme(option)}
                   className={styles.realRadio}
                 />
                 <label
-                  htmlFor={`colorScheme${option}`}
+                  htmlFor={`${inputIdPrefix}${option}`}
                   className={styles.label}
-                  title={option}
+                  title={option.toLocaleUpperCase()}
                 >
                   <span className={styles.labelText}>
-                    {colorModeIcon[option.toLowerCase() as ColorScheme]}
+                    {colorModeIcon[option]}
                   </span>
                 </label>
               </div>

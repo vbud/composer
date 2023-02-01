@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
+import { useStore } from 'src/store';
 import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
 import { Stack } from '../Stack/Stack';
 import { Heading } from '../Heading/Heading';
 import { Button } from '../Button/Button';
 import { Inline } from '../Inline/Inline';
-import { FileContext } from 'src/contexts/FileContext';
 
 export default function ZoomControlPanel() {
-  const [{ canvasViewport }] = useContext(FileContext);
+  const canvasViewport = useStore((s) => s.canvasViewport);
 
   return (
     <ToolbarPanel data-testid="preview-panel">

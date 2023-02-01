@@ -1,15 +1,18 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import classNames from 'classnames';
 import { NoPanArea } from './ZoomableCanvas';
 import { Rnd } from 'react-rnd';
 
-import { CompileAndRenderCode } from './CompileAndRenderCode';
 import {
-  FileFrame,
+  useStore,
+  shallow,
+  FileId,
   SelectedFrameId,
-  FileContext,
-} from 'src/contexts/FileContext';
-import { Components } from 'src/utils/components';
+  FileFrame,
+  CanvasPosition,
+} from 'src/store';
+import { CompileAndRenderCode } from './CompileAndRenderCode';
+import { components } from 'src/utils/components';
 
 import * as styles from './CanvasFrame.css';
 
@@ -38,30 +41,32 @@ const directionToDeltas: Record<MoveInterval['direction'], [number, number]> = {
 };
 
 interface CanvasFrameProps {
-  fileFrame: FileFrame;
-  components: Components;
+  fileId: FileId;
   selectedFrameId: SelectedFrameId;
-  scale: number;
+  frame: FileFrame;
+  canvasPosition: CanvasPosition;
   canvasEl: HTMLDivElement | null;
 }
 
 export const CanvasFrame = ({
-  fileFrame,
-  components,
+  fileId,
   selectedFrameId,
-  scale,
+  frame,
+  canvasPosition,
   canvasEl,
 }: CanvasFrameProps) => {
-  const [{ canvasViewport }, dispatch] = useContext(FileContext);
-
+  const [canvasViewport, moveFrame, selectFrame, deleteFrame] = useStore(
+    (s) => [s.canvasViewport, s.moveFrame, s.selectFrame, s.deleteFrame],
+    shallow
+  );
   const dragStartPosition = React.useRef({ x: 0, y: 0 });
   const canvasClientRect = useRef<DOMRect | null>(null);
   const moveInterval = useRef<MoveInterval | null>(null);
 
-  const { id, x, y, width, height, code } = fileFrame;
+  const { id: frameId, x, y, width, height, code } = frame;
 
   const focusIfSelected = useCallback((node: Rnd) => {
-    if (node && id === selectedFrameId) {
+    if (node && frameId === selectedFrameId) {
       node.getSelfElement()?.focus();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +140,7 @@ export const CanvasFrame = ({
     }
   };
 
-  const isSelected = id === selectedFrameId;
+  const isSelected = frameId === selectedFrameId;
 
   return (
     <NoPanArea
@@ -154,7 +159,7 @@ export const CanvasFrame = ({
         })}
         size={{ width, height }}
         position={{ x: 0, y: 0 }}
-        scale={scale}
+        scale={canvasPosition.zoom}
         onDragStart={(_event, d) => {
           dragStartPosition.current = {
             x: d.x,
@@ -169,39 +174,31 @@ export const CanvasFrame = ({
         }}
         onDragStop={(_event, d) => {
           stopMoving();
-          dispatch({
-            type: 'moveFrame',
-            payload: {
-              id: id,
-              x: x + d.x - dragStartPosition.current.x,
-              y: y + d.y - dragStartPosition.current.y,
-            },
+          moveFrame(fileId, frameId, {
+            x: x + d.x - dragStartPosition.current.x,
+            y: y + d.y - dragStartPosition.current.y,
           });
         }}
         onResizeStop={(_event, _direction, ref, _delta, position) => {
-          dispatch({
-            type: 'moveFrame',
-            payload: {
-              id,
-              width: ref.offsetWidth,
-              height: ref.offsetHeight,
-              x: x + position.x,
-              y: y + position.y,
-            },
+          moveFrame(fileId, frameId, {
+            x: x + position.x,
+            y: y + position.y,
+            width: ref.offsetWidth,
+            height: ref.offsetHeight,
           });
         }}
         onMouseDown={(event) => {
           event.stopPropagation();
-          dispatch({ type: 'selectFrame', payload: id });
+          selectFrame(fileId, frameId);
         }}
         onKeyDown={(event: React.KeyboardEvent) => {
           if (event.code === 'Backspace') {
-            dispatch({ type: 'deleteFrame', payload: id });
+            deleteFrame(fileId, frameId);
           }
         }}
         tabIndex={0} // make element focusable so it can handle keyboard events
       >
-        <div className={styles.frameName}>{id}</div>
+        <div className={styles.frameName}>{frameId}</div>
         <div className={styles.frame}>
           <CompileAndRenderCode code={code} components={components} />
         </div>
