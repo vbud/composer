@@ -227,7 +227,7 @@ const createReducer =
         return {
           ...state,
           fileFrames,
-          selectedFrameId: null,
+          selectedFrameId: newFrameId,
         };
       }
 
