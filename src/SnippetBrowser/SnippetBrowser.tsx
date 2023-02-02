@@ -114,17 +114,17 @@ export default function SnippetBrowser({ fileId }: { fileId: FileId }) {
   useInteractOutside(rootRef, () => toggleShowSnippets());
 
   const onSelectSnippet = (snippet: Snippet) => {
+    toggleShowSnippets();
+
+    if (selectedFrameId === null) {
+      displayStatusMessage({
+        message: 'Select a frame before trying to insert a snippet',
+        tone: 'critical',
+      });
+      return;
+    }
+
     if (editorView) {
-      toggleShowSnippets();
-
-      if (selectedFrameId === null) {
-        displayStatusMessage({
-          message: 'Select a frame before trying to insert a snippet',
-          tone: 'critical',
-        });
-        return;
-      }
-
       setTimeout(() => editorView.focus(), 0);
 
       const { code, cursorPosition } = frames[selectedFrameId];
