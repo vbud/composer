@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 
 import { useStore, shallow, FileId } from 'src/store';
-import { snippets } from 'src/snippets';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
 import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
@@ -41,8 +40,6 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
   const isSettingsOpen = activeToolbarPanel === 'settings';
   const isZoomControlOpen = activeToolbarPanel === 'canvasZoomControl';
 
-  const hasSnippets = snippets && snippets.length > 0;
-
   return (
     <div className={styles.root}>
       <div className={styles.actionsLeft}>
@@ -53,7 +50,6 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
           title={`Insert snippet (${
             navigator.platform.match('Mac') ? '\u2318' : 'Ctrl + '
           }K)`}
-          disabled={!hasSnippets}
           data-testid="toggleSnippets"
           onClick={() => {
             toggleShowSnippets();

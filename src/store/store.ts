@@ -8,15 +8,15 @@ import { ColorScheme } from 'src/utils/colorScheme';
 
 export type FileId = string;
 
-export interface File {
+interface File {
   id: FileId;
   name: string;
   canvasPosition: CanvasPosition;
   selectedFrameId: SelectedFrameId;
-  frames: FileFrames;
+  frames: Frames;
 }
 
-export type Files = Record<FileId, File>;
+type Files = Record<FileId, File>;
 
 export interface CanvasPosition {
   left: number;
@@ -36,7 +36,7 @@ export interface Frame {
   cursorPosition: number;
 }
 
-export type FileFrames = Record<FrameId, Frame>;
+type Frames = Record<FrameId, Frame>;
 
 interface StatusMessage {
   message: string;

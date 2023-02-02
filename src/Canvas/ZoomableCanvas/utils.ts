@@ -51,15 +51,6 @@ export function parametricBlend(percent: number) {
   return a / (2.0 * (a - percent) + 1.0);
 }
 
-export function rectContainsPoint(clientRect: DOMRect, x: number, y: number) {
-  return (
-    clientRect.left < x &&
-    clientRect.right > x &&
-    clientRect.top < y &&
-    clientRect.bottom > y
-  );
-}
-
 export function transitionNumber(
   start: number,
   end: number,
@@ -78,9 +69,8 @@ export function* walkElementHierarchyUp(
   }
 }
 
-export const browserIsSafari = () => navigator.vendor.match(/Apple/);
 export const browserIsSafariDesktop = () =>
-  browserIsSafari() && typeof Touch === 'undefined';
+  navigator.vendor.match(/Apple/) && typeof Touch === 'undefined';
 
 export function isMouseEvent(e: MouseEvent | TouchEvent): e is MouseEvent {
   return (e as any).touches === undefined;

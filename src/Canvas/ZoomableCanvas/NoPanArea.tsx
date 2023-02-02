@@ -6,7 +6,7 @@ import { SpaceContext, SpaceContextType } from './SpaceContext';
 
 import * as styles from './NoPanArea.css';
 
-export interface NoPanAreaProps extends React.PropsWithChildren {
+interface NoPanAreaProps extends React.PropsWithChildren {
   readonly id?: string;
   readonly className?: string;
   readonly style?: React.CSSProperties;

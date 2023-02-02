@@ -60,6 +60,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
   );
 }
 
+// ts-unused-exports:disable-next-line
 export default function FilePageWrapper() {
   const router = useRouter();
   const { fileId } = router.query;
