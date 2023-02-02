@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   keymap,
   highlightSpecialChars,
@@ -84,6 +84,10 @@ export const CodeEditor = ({
   fileId: FileId;
   frameId: FrameId;
 }) => {
+  // ref for storing state so that codemirror updateListener can access the latest state
+  const codemirrorStateRef = useRef({ fileId, frameId });
+  codemirrorStateRef.current = { fileId, frameId };
+
   const [
     editorView,
     frame,
@@ -131,7 +135,6 @@ export const CodeEditor = ({
 
   const setupEditor = useCallback(
     (node: HTMLDivElement | null) => {
-      console.log('setupEditor', node);
       if (node) {
         const updateFrameEditorStateDebounced = debounce(
           updateFrameEditorState,
@@ -141,6 +144,10 @@ export const CodeEditor = ({
         const updateListener = EditorView.updateListener.of(
           (viewUpdate: ViewUpdate) => {
             if (viewUpdate.docChanged || viewUpdate.selectionSet) {
+              // fileId and frameId would be stale without this approach, since
+              // the updateListener is setup with whatever fileId and frameId
+              // exist when setupEditor is called
+              const { fileId, frameId } = codemirrorStateRef.current;
               updateFrameEditorStateDebounced(fileId, frameId, {
                 code: viewUpdate.state.doc.toString(),
                 cursorPosition: viewUpdate.state.selection.main.anchor,
@@ -223,13 +230,7 @@ export const CodeEditor = ({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fileId, frameId]
-    // Tear down and re-setup the editor whenever `fileId` or `frameId` changes
-    // so that `updateListener` is registered with the latest `fileId` and
-    // `frameId`. However, we explicitly ignore the other state this
-    // `useCallback` depends on, as they are only used for the `EditorView`
-    // `initialState`. We would not want to tear down and re-setup the editor
-    // whenever `code` or `cursorPosition` changes.
+    []
   );
 
   return <div className={styles.root} ref={setupEditor} />;
