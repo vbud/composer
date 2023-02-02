@@ -14,7 +14,7 @@ export function getCompletions(hints: Hints) {
         context.pos,
         -1
       );
-      // Keeping these around, they are helpful for debugging completions.
+      // These can be helpful for debugging completions.
       // console.log(context.state.doc.lineAt(context.pos).text);
       // console.log('node', node.name, node);
       // console.log('nodeBefore', nodeBefore.name, nodeBefore);

@@ -395,14 +395,14 @@ export class ViewPort {
 
   private handleContextMenu = (e: MouseEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleContextMenu`);
+      console.info(`ViewPort:handleContextMenu`);
     }
     this.options?.onContextMenu?.(e, this.getPressCoordinatesFromEvent(e));
   };
 
   private handleGestureStartForDesktopSafari = (e: any) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleGestureStartForDesktopSafari`);
+      console.info(`ViewPort:handleGestureStartForDesktopSafari`);
     }
     e.preventDefault();
 
@@ -415,7 +415,7 @@ export class ViewPort {
 
   private handleGestureChangeForDesktopSafari = (e: any) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleGestureChangeForDesktopSafari`);
+      console.info(`ViewPort:handleGestureChangeForDesktopSafari`);
     }
     e.preventDefault();
     if (!this.currentDesktopSafariGestureState) {
@@ -442,7 +442,7 @@ export class ViewPort {
 
   private handleGestureEndForDesktopSafari = (e: any) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleGestureEndForDesktopSafari`);
+      console.info(`ViewPort:handleGestureEndForDesktopSafari`);
     }
     e.preventDefault();
     this.currentDesktopSafariGestureState = undefined;
@@ -450,14 +450,14 @@ export class ViewPort {
 
   private handleHammerPanStart = () => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPanStart`);
+      console.info(`ViewPort:handleHammerPanStart`);
     }
     this.currentHammerGestureState = undefined;
   };
 
   private handleHammerPanMove = (e: HammerInput) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPanMove`);
+      console.info(`ViewPort:handleHammerPanMove`);
     }
 
     if (this.currentHammerGestureState === undefined) {
@@ -490,7 +490,7 @@ export class ViewPort {
 
   private handleHammerPanEnd = (e: HammerInput) => {
     if (this.options?.debugEvents) {
-      console.log(
+      console.info(
         `ViewPort:handleHammerPanEnd (` + e.velocityX + ',' + e.velocityY + ')'
       );
     }
@@ -508,21 +508,21 @@ export class ViewPort {
 
   private handleHammerPanCancel = () => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPanCancel`);
+      console.info(`ViewPort:handleHammerPanCancel`);
     }
     this.currentHammerGestureState = undefined;
   };
 
   private handleHammerPinchStart = () => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPinchStart`);
+      console.info(`ViewPort:handleHammerPinchStart`);
     }
     this.currentHammerGestureState = undefined;
   };
 
   private handleHammerPinchMove = (e: HammerInput) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPinchMove`);
+      console.info(`ViewPort:handleHammerPinchMove`);
     }
 
     if (this.currentHammerGestureState === undefined) {
@@ -557,7 +557,7 @@ export class ViewPort {
 
   private handleHammerPinchEnd = (e: HammerInput) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPinchEnd`);
+      console.info(`ViewPort:handleHammerPinchEnd`);
     }
     if (!this.pressHandlingMode) {
       // Negative one because the direction of the pointer is the opposite of
@@ -573,14 +573,14 @@ export class ViewPort {
 
   private handleHammerPinchCancel = () => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleHammerPinchCancel`);
+      console.info(`ViewPort:handleHammerPinchCancel`);
     }
     this.currentHammerGestureState = undefined;
   };
 
   private handleMouseDown = (e: MouseEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleMouseDown`);
+      console.info(`ViewPort:handleMouseDown`);
     }
 
     // e.buttons === 1 means the left/primary button is pressed and ONLY that
@@ -599,7 +599,7 @@ export class ViewPort {
 
   private handleMouseMove = (e: MouseEvent) => {
     if (this.options?.debugEvents) {
-      console.log(
+      console.info(
         `ViewPort:handleMouseMove (pressHandlingMode: ${this.pressHandlingMode})`
       );
     }
@@ -625,7 +625,7 @@ export class ViewPort {
 
   private handleMouseUp = (e: MouseEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleMouseUp`);
+      console.info(`ViewPort:handleMouseUp`);
     }
     if (this.pressHandlingMode === 'capture' && this.options?.onPressEnd) {
       this.options?.onPressEnd(e, this.getPressCoordinatesFromEvent(e));
@@ -655,7 +655,7 @@ export class ViewPort {
 
   private handleTouchMove = (e: TouchEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleTouchMove`);
+      console.info(`ViewPort:handleTouchMove`);
     }
     if (e.touches.length === 1) {
       if (this.pressHandlingMode === 'capture' && this.options?.onPressMove) {
@@ -671,7 +671,7 @@ export class ViewPort {
 
   private handleTouchEnd = (e: TouchEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleTouchEnd`);
+      console.info(`ViewPort:handleTouchEnd`);
     }
     if (e.touches.length === 0 && e.changedTouches.length === 1) {
       if (this.pressHandlingMode === 'capture' && this.options?.onPressEnd) {
@@ -682,7 +682,7 @@ export class ViewPort {
 
   private handleWheel = (e: WheelEvent) => {
     if (this.options?.debugEvents) {
-      console.log(`ViewPort:handleWheel`, e);
+      console.info(`ViewPort:handleWheel`, e);
     }
 
     e.preventDefault();
