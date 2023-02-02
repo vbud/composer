@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
 import { Resizable } from 're-resizable';
 
-import { useStore, shallow, File, initialEditorWidth } from 'src/store';
+import { useStore, shallow, FileId, initialEditorWidth } from 'src/store';
 import Toolbar from 'src/Toolbar/Toolbar';
 import { StatusMessage } from 'src/StatusMessage/StatusMessage';
 import { CodeEditor } from 'src/CodeEditor/CodeEditor';
@@ -19,10 +19,12 @@ import { isMetaOrCtrlExclusivelyPressed } from 'src/utils/modifierKeys';
 
 import * as styles from './File.css';
 
-// TODO: move state into children, hooks. This may simplify the wrapper too.
-function FilePage({ file }: { file: File }) {
-  const { id: fileId, name, selectedFrameId, frames } = file;
+// TODO: move state into children, hooks.
+function FilePage({ fileId }: { fileId: FileId }) {
   const [
+    name,
+    selectedFrameId,
+    frames,
     editorView,
     editorWidth,
     showSnippets,
@@ -34,6 +36,9 @@ function FilePage({ file }: { file: File }) {
     displayStatusMessage,
   ] = useStore(
     (s) => [
+      s.files[fileId].name,
+      s.files[fileId].selectedFrameId,
+      s.files[fileId].frames,
       s.editorView,
       s.editorWidth,
       s.showSnippets,
@@ -47,12 +52,19 @@ function FilePage({ file }: { file: File }) {
     shallow
   );
 
+  // TODO: co-locate cmd-K with Toolbar
+  // TODO: use-hotkeys
   useEffect(() => {
     const keyDownListener = (e: KeyboardEvent) => {
       if (e.code === 'Backslash' && isMetaOrCtrlExclusivelyPressed(e)) {
         e.preventDefault();
         toggleShowCanvasOnly();
-      } else if (e.code === 'KeyK' && isMetaOrCtrlExclusivelyPressed(e)) {
+      } else if (
+        e.code === 'KeyK' &&
+        isMetaOrCtrlExclusivelyPressed(e) &&
+        selectedFrameId !== null
+      ) {
+        // TODO: critical status message that snippets cannot be shown
         e.preventDefault();
         toggleShowSnippets();
       }
@@ -62,7 +74,7 @@ function FilePage({ file }: { file: File }) {
     return () => {
       document.removeEventListener('keydown', keyDownListener);
     };
-  }, [toggleShowCanvasOnly, toggleShowSnippets]);
+  }, [selectedFrameId, toggleShowCanvasOnly, toggleShowSnippets]);
 
   const updateEditorWidthDebounced = useDebouncedCallback(updateEditorWidth, 1);
 
@@ -166,12 +178,12 @@ export default function FilePageWrapper() {
   const router = useRouter();
   const { fileId } = router.query;
 
-  const file = useStore((s) =>
-    typeof fileId === 'string' ? s.files[fileId] : undefined
+  const fileFound = useStore(
+    (s) => typeof fileId === 'string' && Object.keys(s.files).includes(fileId)
   );
 
   // Render nothing if a file does not exist for the specified fileId
-  if (file === undefined) {
+  if (typeof fileId !== 'string' || fileFound === undefined) {
     // When we replace this with a "file not found" page in the future, we will
     // also need to handle the edge case of deleting a file. There is a brief
     // possible state where the file does not exist because it has been deleted,
@@ -179,5 +191,5 @@ export default function FilePageWrapper() {
     return null;
   }
 
-  return <FilePage file={file} />;
+  return <FilePage fileId={fileId} />;
 }
