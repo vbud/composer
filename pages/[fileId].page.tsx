@@ -1,41 +1,33 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import classnames from 'classnames';
-import { useDebouncedCallback } from 'use-debounce';
-import { Resizable } from 're-resizable';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { useStore, shallow, FileId, initialEditorWidth } from 'src/store';
+import { useStore, shallow, FileId } from 'src/store';
 import Toolbar from 'src/Toolbar/Toolbar';
 import { StatusMessage } from 'src/StatusMessage/StatusMessage';
-import { CodeEditor } from 'src/CodeEditor/CodeEditor';
 import { Canvas } from 'src/Canvas/Canvas';
-import { Text } from 'src/Text/Text';
 import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
 
 import * as styles from './File.css';
+import { ResizableCodeEditor } from 'src/CodeEditor/ResizableCodeEditor';
 
 function FilePage({ fileId }: { fileId: FileId }) {
   const [
     name,
     selectedFrameId,
-    editorWidth,
     showSnippets,
     showCanvasOnly,
     toggleShowCanvasOnly,
     toggleShowSnippets,
-    updateEditorWidth,
   ] = useStore(
     (s) => [
       s.files[fileId].name,
       s.files[fileId].selectedFrameId,
-      s.editorWidth,
       s.showSnippets,
       s.showCanvasOnly,
       s.toggleShowCanvasOnly,
       s.toggleShowSnippets,
-      s.updateEditorWidth,
     ],
     shallow
   );
@@ -48,8 +40,6 @@ function FilePage({ fileId }: { fileId: FileId }) {
   useHotkeys('meta+\\', () => toggleShowCanvasOnly(), useHotkeysOptions);
   useHotkeys('meta+k', () => toggleShowSnippets(), useHotkeysOptions);
 
-  const updateEditorWidthDebounced = useDebouncedCallback(updateEditorWidth, 1);
-
   return (
     <div className={styles.root}>
       <Head>
@@ -58,40 +48,10 @@ function FilePage({ fileId }: { fileId: FileId }) {
 
       {!showCanvasOnly && <Toolbar fileId={fileId} />}
       <div className={styles.main}>
-        <Resizable
-          className={classnames(styles.resizeableContainer, {
-            [styles.resizeableContainer_isHidden]: showCanvasOnly,
-          })}
-          size={{
-            height: '100%',
-            width: `${editorWidth}px`,
-          }}
-          minWidth={initialEditorWidth}
-          maxWidth="80vw"
-          onResize={(_event, _direction, { offsetWidth }) => {
-            updateEditorWidthDebounced(offsetWidth);
-          }}
-          enable={{
-            top: false,
-            right: true,
-            bottom: false,
-            left: false,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
-        >
-          <div className={styles.editorContainer}>
-            {selectedFrameId !== null ? (
-              <CodeEditor fileId={fileId} frameId={selectedFrameId} />
-            ) : (
-              <div className={styles.emptyCodeEditor}>
-                <Text>No frame selected.</Text>
-              </div>
-            )}
-          </div>
-        </Resizable>
+        <ResizableCodeEditor
+          fileId={fileId}
+          selectedFrameId={selectedFrameId}
+        />
         <Canvas fileId={fileId} />
       </div>
       {showSnippets && <SnippetBrowser fileId={fileId} />}
