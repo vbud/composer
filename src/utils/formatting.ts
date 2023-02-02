@@ -3,12 +3,12 @@ import babel from 'prettier/parser-babel';
 
 import { insertAtCursor } from './cursor';
 
-export interface CodeWithCursor {
+interface CodeWithCursor {
   code: string;
   cursor: number;
 }
 
-export const runPrettier = ({
+const runPrettier = ({
   code,
   cursorOffset,
 }: {

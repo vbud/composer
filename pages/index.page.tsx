@@ -10,6 +10,7 @@ import { Heading } from 'src/Heading/Heading';
 
 import * as styles from './Home.css';
 
+// ts-unused-exports:disable-next-line
 export default function Home() {
   const router = useRouter();
   const [files, createFile] = useStore((s) => [s.files, s.createFile], shallow);

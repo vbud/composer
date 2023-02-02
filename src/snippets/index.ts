@@ -1,6 +1,6 @@
 const req = require.context('.', true, /([a-zA-Z]+)\.snippets\.tsx?$/);
 
-export interface SnippetDefinition {
+interface SnippetDefinition {
   name: string;
   code: string;
 }

@@ -7,7 +7,7 @@ import {
   VirtualSpacePixelUnit,
 } from './ViewPort';
 
-export interface PressEventCoordinatesWithDeltas extends PressEventCoordinates {
+interface PressEventCoordinatesWithDeltas extends PressEventCoordinates {
   readonly clientXDelta: ClientPixelUnit;
   readonly clientYDelta: ClientPixelUnit;
   readonly containerXDelta: ClientPixelUnit;

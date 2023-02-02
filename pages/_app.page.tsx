@@ -20,6 +20,7 @@ const NonSSRWrapper = dynamic(() => Promise.resolve(NonSSRApp), {
   ssr: false,
 });
 
+// ts-unused-exports:disable-next-line
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <NonSSRWrapper>

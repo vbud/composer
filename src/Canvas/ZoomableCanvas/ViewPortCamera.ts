@@ -25,7 +25,7 @@ export interface ViewPortCameraValues {
   // tslint:enable: readonly-keyword
 }
 
-export interface ViewPortCameraAnimationOptions {
+interface ViewPortCameraAnimationOptions {
   readonly durationMilliseconds: number;
   /**
    * Note that if the container size changes or `setBounds` is called, it will

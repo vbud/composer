@@ -12,7 +12,7 @@ import { PressEventCoordinates, ViewPort } from './ViewPort';
 
 import * as styles from './Space.css';
 
-export interface SpaceProps extends React.PropsWithChildren {
+interface SpaceProps extends React.PropsWithChildren {
   /**
    * Optional id to use on the outer `div` that the `Space` renders.
    */
