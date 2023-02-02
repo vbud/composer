@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import fuzzy from 'fuzzy';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { useStore, shallow, FileId } from 'src/store';
 import { compileJsx } from 'src/utils/compileJsx';
 import { snippets, Snippet } from 'src/snippets';
 import { components } from 'src/utils/components';
@@ -10,14 +11,13 @@ import SearchField from './SearchField/SearchField';
 import { Strong } from '../Strong/Strong';
 import { Text } from '../Text/Text';
 import RenderCode from '../RenderCode/RenderCode';
+import { useInteractOutside } from 'src/utils/useInteractOutside';
+import { formatAndInsert } from 'src/utils/formatting';
+import { isValidLocation } from 'src/utils/cursor';
 
 import * as styles from './SnippetBrowser.css';
 
 type HighlightIndex = number | null;
-interface Props {
-  ref: React.RefObject<HTMLDivElement>;
-  onSelectSnippet: (snippet: Snippet) => void;
-}
 
 const filterSnippetsForTerm = (term: string) =>
   term
@@ -74,112 +74,170 @@ const scrollToHighlightedSnippet = (
   }
 };
 
-const SnippetBrowser = React.forwardRef<HTMLDivElement, Props>(
-  ({ onSelectSnippet }, ref) => {
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [highlightedIndex, setHighlightedIndex] =
-      useState<HighlightIndex>(null);
-    const listEl = useRef<HTMLUListElement | null>(null);
-    const highlightedEl = useRef<HTMLLIElement | null>(null);
-    const debounceScrollToHighlighted = useDebouncedCallback(
-      scrollToHighlightedSnippet,
-      50
-    );
-    const filteredSnippets = useMemo(
-      () => filterSnippetsForTerm(searchTerm),
-      [searchTerm]
-    );
+export default function SnippetBrowser({ fileId }: { fileId: FileId }) {
+  const [
+    selectedFrameId,
+    frames,
+    editorView,
+    toggleShowSnippets,
+    updateFrameEditorState,
+    displayStatusMessage,
+  ] = useStore(
+    (s) => [
+      s.files[fileId].selectedFrameId,
+      s.files[fileId].frames,
+      s.editorView,
+      s.toggleShowSnippets,
+      s.updateFrameEditorState,
+      s.displayStatusMessage,
+    ],
+    shallow
+  );
 
-    return (
-      <div ref={ref} className={styles.root} data-testid="snippets">
-        <div className={styles.fieldContainer}>
-          <SearchField
-            value={searchTerm}
-            onChange={(e) => {
-              const { value } = e.currentTarget;
-              setSearchTerm(value);
-            }}
-            placeholder="Find a snippet..."
-            onBlur={() => {
-              setHighlightedIndex(null);
-            }}
-            onKeyUp={() => {
-              debounceScrollToHighlighted(
-                listEl.current,
-                highlightedEl.current
-              );
-            }}
-            onKeyDown={(event) => {
-              if (/^(?:Arrow)?Down$/.test(event.key)) {
-                if (
-                  highlightedIndex === null ||
-                  highlightedIndex === filteredSnippets.length - 1
-                ) {
-                  setHighlightedIndex(0);
-                } else if (highlightedIndex < filteredSnippets.length - 1) {
-                  setHighlightedIndex(highlightedIndex + 1);
-                }
-                event.preventDefault();
-              } else if (/^(?:Arrow)?Up$/.test(event.key)) {
-                if (highlightedIndex === null || highlightedIndex === 0) {
-                  setHighlightedIndex(filteredSnippets.length - 1);
-                } else if (highlightedIndex > 0) {
-                  setHighlightedIndex(highlightedIndex - 1);
-                }
-                event.preventDefault();
-              } else if (
-                !event.ctrlKey &&
-                !event.metaKey &&
-                !event.altKey &&
-                /^[a-z0-9!"#$%&'()*+,./:;<=>?@[\] ^_`{|}~-]$/i.test(event.key)
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [highlightedIndex, setHighlightedIndex] =
+    useState<HighlightIndex>(null);
+
+  const listEl = useRef<HTMLUListElement | null>(null);
+  const highlightedEl = useRef<HTMLLIElement | null>(null);
+
+  const debounceScrollToHighlighted = useDebouncedCallback(
+    scrollToHighlightedSnippet,
+    50
+  );
+  const filteredSnippets = useMemo(
+    () => filterSnippetsForTerm(searchTerm),
+    [searchTerm]
+  );
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  useInteractOutside(rootRef, () => toggleShowSnippets());
+
+  const onSelectSnippet = (snippet: Snippet) => {
+    if (editorView) {
+      toggleShowSnippets();
+
+      if (selectedFrameId === null) {
+        displayStatusMessage({
+          message: 'Select a frame before trying to insert a snippet',
+          tone: 'critical',
+        });
+        return;
+      }
+
+      setTimeout(() => editorView.focus(), 0);
+
+      const { code, cursorPosition } = frames[selectedFrameId];
+      const validCursorPosition = isValidLocation({
+        code,
+        cursor: cursorPosition,
+      });
+
+      if (!validCursorPosition) {
+        displayStatusMessage({
+          message: 'Cannot insert snippet at cursor',
+          tone: 'critical',
+        });
+        return;
+      }
+
+      const result = formatAndInsert({
+        code,
+        cursor: cursorPosition,
+        snippet: snippet.code,
+      });
+
+      updateFrameEditorState(fileId, selectedFrameId, {
+        code: result.code,
+        cursorPosition: result.cursor,
+      });
+    }
+  };
+
+  return (
+    <div ref={rootRef} className={styles.root} data-testid="snippets">
+      <div className={styles.fieldContainer}>
+        <SearchField
+          value={searchTerm}
+          onChange={(e) => {
+            const { value } = e.currentTarget;
+            setSearchTerm(value);
+          }}
+          placeholder="Find a snippet..."
+          onBlur={() => {
+            setHighlightedIndex(null);
+          }}
+          onKeyUp={() => {
+            debounceScrollToHighlighted(listEl.current, highlightedEl.current);
+          }}
+          onKeyDown={(event) => {
+            if (/^(?:Arrow)?Down$/.test(event.key)) {
+              if (
+                highlightedIndex === null ||
+                highlightedIndex === filteredSnippets.length - 1
               ) {
-                // reset index when character typed in field
                 setHighlightedIndex(0);
-              } else if (event.key === 'Enter' && highlightedIndex !== null) {
-                onSelectSnippet(filteredSnippets[highlightedIndex]);
+              } else if (highlightedIndex < filteredSnippets.length - 1) {
+                setHighlightedIndex(highlightedIndex + 1);
               }
-            }}
-            data-testid="filterSnippets"
-          />
-        </div>
-        <ul
-          className={styles.snippetsContainer}
-          data-testid="snippet-list"
-          ref={listEl}
-        >
-          {filteredSnippets.map((snippet, index) => {
-            const isHighlighted = highlightedIndex === index;
-            let compiledCode;
-            try {
-              compiledCode = compileJsx(snippet.code) ?? undefined;
-            } catch {}
-
-            return (
-              <li
-                ref={isHighlighted ? highlightedEl : undefined}
-                key={`${snippet.componentName}_${snippet.name}_${index}`}
-                className={classnames(styles.snippet, {
-                  [styles.highlight]: isHighlighted,
-                })}
-                onMouseMove={
-                  isHighlighted ? undefined : () => setHighlightedIndex(index)
-                }
-                onMouseDown={() => onSelectSnippet(filteredSnippets[index])}
-              >
-                <Text size="large">
-                  <Strong>{snippet.componentName}</Strong>
-                  <span className={styles.snippetName}>{snippet.name}</span>
-                </Text>
-                <div className={styles.snippetBackground}>
-                  <RenderCode code={compiledCode} scope={components} />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+              event.preventDefault();
+            } else if (/^(?:Arrow)?Up$/.test(event.key)) {
+              if (highlightedIndex === null || highlightedIndex === 0) {
+                setHighlightedIndex(filteredSnippets.length - 1);
+              } else if (highlightedIndex > 0) {
+                setHighlightedIndex(highlightedIndex - 1);
+              }
+              event.preventDefault();
+            } else if (
+              !event.ctrlKey &&
+              !event.metaKey &&
+              !event.altKey &&
+              /^[a-z0-9!"#$%&'()*+,./:;<=>?@[\] ^_`{|}~-]$/i.test(event.key)
+            ) {
+              // reset index when character typed in field
+              setHighlightedIndex(0);
+            } else if (event.key === 'Enter' && highlightedIndex !== null) {
+              onSelectSnippet(filteredSnippets[highlightedIndex]);
+            }
+          }}
+          data-testid="filterSnippets"
+        />
       </div>
-    );
-  }
-);
-SnippetBrowser.displayName = 'SnippetBrowser';
-export default SnippetBrowser;
+      <ul
+        className={styles.snippetsContainer}
+        data-testid="snippet-list"
+        ref={listEl}
+      >
+        {filteredSnippets.map((snippet, index) => {
+          const isHighlighted = highlightedIndex === index;
+          let compiledCode;
+          try {
+            compiledCode = compileJsx(snippet.code) ?? undefined;
+          } catch {}
+
+          return (
+            <li
+              ref={isHighlighted ? highlightedEl : undefined}
+              key={`${snippet.componentName}_${snippet.name}_${index}`}
+              className={classnames(styles.snippet, {
+                [styles.highlight]: isHighlighted,
+              })}
+              onMouseMove={
+                isHighlighted ? undefined : () => setHighlightedIndex(index)
+              }
+              onMouseDown={() => onSelectSnippet(filteredSnippets[index])}
+            >
+              <Text size="large">
+                <Strong>{snippet.componentName}</Strong>
+                <span className={styles.snippetName}>{snippet.name}</span>
+              </Text>
+              <div className={styles.snippetBackground}>
+                <RenderCode code={compiledCode} scope={components} />
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}

@@ -56,6 +56,7 @@ specifiers:
   react: 18.2.0
   react-docgen-typescript: ^2.2.2
   react-dom: 18.2.0
+  react-hotkeys-hook: ^4.3.4
   react-is: ^18.2.0
   react-rnd: ^10.4.1
   react-zoomable-ui: ^0.11.0
@@ -102,6 +103,7 @@ dependencies:
   react: 18.2.0
   react-docgen-typescript: 2.2.2_typescript@4.9.4
   react-dom: 18.2.0_react@18.2.0
+  react-hotkeys-hook: 4.3.4_biqbaboplfbrettd7655fr4n2y
   react-is: 18.2.0
   react-rnd: 10.4.1_biqbaboplfbrettd7655fr4n2y
   react-zoomable-ui: 0.11.0_react@18.2.0
@@ -4479,6 +4481,16 @@ packages:
     dependencies:
       clsx: 1.2.1
       prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-hotkeys-hook/4.3.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-XV/tMK8n0joWa4tSklfddLUDirbu8T/H1hRPPm+UnfdT2ajp/jZPDh0q3L24nYjsCSwNIA6XFewYPguqrTIXkg==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

@@ -17,7 +17,6 @@ import * as styles from './Toolbar.css';
 export default function Toolbar({ fileId }: { fileId: FileId }) {
   const [
     activeToolbarPanel,
-    selectedFrameId,
     canvasPosition,
     openToolbarPanel,
     closeToolbarPanel,
@@ -26,7 +25,6 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
   ] = useStore(
     (s) => [
       s.activeToolbarPanel,
-      s.files[fileId].selectedFrameId,
       s.files[fileId].canvasPosition,
       s.openToolbarPanel,
       s.closeToolbarPanel,
@@ -55,7 +53,7 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
           title={`Insert snippet (${
             navigator.platform.match('Mac') ? '\u2318' : 'Ctrl + '
           }K)`}
-          disabled={selectedFrameId === null || !hasSnippets}
+          disabled={!hasSnippets}
           data-testid="toggleSnippets"
           onClick={() => {
             toggleShowSnippets();
