@@ -49,13 +49,15 @@ type ToolbarPanel = 'settings' | 'canvasZoomControl';
 export type SelectedFrameId = string | null;
 
 interface State {
+  // persisted state
   files: Files;
-  showSnippets: boolean;
-  showCanvasOnly: boolean;
   colorScheme: ColorScheme;
   editorWidth: number;
+  // non-persisted state
   editorView: EditorView | null;
   canvasViewport: ViewPort | null;
+  showSnippets: boolean;
+  showCanvasOnly: boolean;
   activeToolbarPanel: ToolbarPanel | null;
   statusMessage: StatusMessage | null;
 }
@@ -103,11 +105,11 @@ interface Actions {
   // toolbar panel
   openToolbarPanel: (panel: ToolbarPanel) => void;
   closeToolbarPanel: () => void;
-  // other app state
-  toggleShowSnippets: () => void;
-  toggleShowCanvasOnly: () => void;
+  // other UI state
   updateEditorWidth: (editorWidth: number) => void;
   updateColorScheme: (colorScheme: ColorScheme) => void;
+  toggleShowSnippets: () => void;
+  toggleShowCanvasOnly: () => void;
 }
 
 export const initialEditorWidth = 400;
@@ -115,19 +117,16 @@ export const initialEditorWidth = 400;
 export const useStore = create<State & Actions>()(
   persist(
     (set) => ({
-      /* STATE */
       files: {},
-      showSnippets: false,
-      showCanvasOnly: false,
       colorScheme: 'system',
       editorWidth: initialEditorWidth,
       editorView: null,
       canvasViewport: null,
       activeToolbarPanel: null,
       statusMessage: null,
+      showSnippets: false,
+      showCanvasOnly: false,
 
-      /* ACTIONS */
-      // file
       createFile: () => {
         const newFile = {
           id: crypto.randomUUID(),
@@ -161,8 +160,6 @@ export const useStore = create<State & Actions>()(
             state.files[fileId].name = newName;
           })
         ),
-
-      // frame
       createFrame: (fileId) =>
         set(
           produce((state) => {
@@ -173,7 +170,7 @@ export const useStore = create<State & Actions>()(
               y: 0,
               width: 500,
               height: 500,
-              // Cursor should be located between the React Fragment start and end tags
+              // cursor should be located between the React Fragment start and end tags
               cursorPosition: 5,
             };
             const file = state.files[fileId];
@@ -218,7 +215,7 @@ export const useStore = create<State & Actions>()(
             frame.cursorPosition = cursorPosition;
           });
         }),
-      // editor
+
       initializeEditor: (editorView) =>
         set((state) => ({
           ...state,
@@ -232,8 +229,6 @@ export const useStore = create<State & Actions>()(
             editorView: null,
           };
         }),
-
-      // canvas
       initializeCanvas: (canvasViewport) =>
         set((state) => ({
           ...state,
@@ -250,8 +245,6 @@ export const useStore = create<State & Actions>()(
             state.files[fileId].canvasPosition = canvasPosition;
           })
         ),
-
-      // status message
       displayStatusMessage: (statusMessage) =>
         set((state) => ({
           ...state,
@@ -262,8 +255,6 @@ export const useStore = create<State & Actions>()(
           ...state,
           statusMessage: null,
         })),
-
-      // toolbar panel
       openToolbarPanel: (panel) =>
         set((state) => {
           const shouldOpen = panel !== state.activeToolbarPanel;
@@ -282,8 +273,16 @@ export const useStore = create<State & Actions>()(
           ...state,
           activeToolbarPanel: null,
         })),
-
-      // other app state
+      updateEditorWidth: (editorWidth) =>
+        set((state) => ({
+          ...state,
+          editorWidth,
+        })),
+      updateColorScheme: (colorScheme) =>
+        set((state) => ({
+          ...state,
+          colorScheme,
+        })),
       toggleShowSnippets: () =>
         set((state) => ({
           ...state,
@@ -301,16 +300,6 @@ export const useStore = create<State & Actions>()(
 
           return newState;
         }),
-      updateEditorWidth: (editorWidth) =>
-        set((state) => ({
-          ...state,
-          editorWidth,
-        })),
-      updateColorScheme: (colorScheme) =>
-        set((state) => ({
-          ...state,
-          colorScheme,
-        })),
     }),
     {
       name: 'composer-storage',
