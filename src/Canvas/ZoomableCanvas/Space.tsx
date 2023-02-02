@@ -34,6 +34,10 @@ export interface SpaceProps extends React.PropsWithChildren {
    */
   readonly onCreate?: (viewPort: ViewPort) => void;
   /**
+   * Called after the `ViewPort` is destroyed.
+   */
+  readonly onDestroy?: () => void;
+  /**
    * Called whenever the `ViewPort` is updated.
    */
   readonly onUpdated?: (viewPort: ViewPort) => void;
@@ -212,9 +216,6 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   private setOuterDivRefAndCreateViewPort = async (
     node: HTMLDivElement | null
   ) => {
-    // TODO: remove this assuming it doesn't break anything? Then I can add an onDestroy prop?
-    this.destroyViewPort();
-
     if (node) {
       this.outerDivElement = node;
 
@@ -244,6 +245,7 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
       });
     } else {
       this.destroyViewPort();
+      this.props.onDestroy?.();
     }
   };
 }

@@ -15,6 +15,7 @@ export const Canvas = ({ fileId }: { fileId: FileId }) => {
     saveCanvasPosition,
     selectFrame,
     initializeCanvas,
+    destroyCanvas,
   ] = useStore(
     (s) => [
       s.files[fileId].canvasPosition,
@@ -23,6 +24,7 @@ export const Canvas = ({ fileId }: { fileId: FileId }) => {
       s.saveCanvasPosition,
       s.selectFrame,
       s.initializeCanvas,
+      s.destroyCanvas,
     ],
     shallow
   );
@@ -50,8 +52,8 @@ export const Canvas = ({ fileId }: { fileId: FileId }) => {
           const { left, top, zoom } = canvasPosition;
           viewport.camera.updateTopLeft(left, top, zoom);
         }}
-        // TODO: use new onDestroy action once onDestroy prop is added
         onUpdated={saveCanvasPositionDebounced}
+        onDestroy={destroyCanvas}
       >
         {Object.keys(frames).map((frameId) => (
           <CanvasFrame
