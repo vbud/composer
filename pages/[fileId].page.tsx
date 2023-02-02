@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -67,6 +67,20 @@ export default function FilePageWrapper() {
   const fileFound: boolean = useStore(
     (s) => typeof fileId === 'string' && Object.keys(s.files).includes(fileId)
   );
+  const resetFileUIState = useStore((s) => s.resetFileUIState);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      resetFileUIState();
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Render nothing if a file does not exist for the specified fileId
   if (typeof fileId !== 'string' || !fileFound) {

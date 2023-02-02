@@ -110,22 +110,27 @@ interface Actions {
   updateColorScheme: (colorScheme: ColorScheme) => void;
   toggleShowSnippets: () => void;
   toggleShowCanvasOnly: () => void;
+  resetFileUIState: () => void;
 }
 
 export const initialEditorWidth = 400;
 
+const initialState: State = {
+  files: {},
+  colorScheme: 'system',
+  editorWidth: initialEditorWidth,
+  editorView: null,
+  canvasViewport: null,
+  activeToolbarPanel: null,
+  statusMessage: null,
+  showSnippets: false,
+  showCanvasOnly: false,
+};
+
 export const useStore = create<State & Actions>()(
   persist(
     (set) => ({
-      files: {},
-      colorScheme: 'system',
-      editorWidth: initialEditorWidth,
-      editorView: null,
-      canvasViewport: null,
-      activeToolbarPanel: null,
-      statusMessage: null,
-      showSnippets: false,
-      showCanvasOnly: false,
+      ...initialState,
 
       createFile: () => {
         const newFile = {
@@ -300,6 +305,16 @@ export const useStore = create<State & Actions>()(
 
           return newState;
         }),
+      // reset all non-persisted UI state, except for `canvasViewport` and
+      // `editorView`, which are reset by `destroyCanvas` and `destroyEditor`
+      resetFileUIState: () =>
+        set((state) => ({
+          ...state,
+          activeToolbarPanel: initialState.activeToolbarPanel,
+          statusMessage: initialState.statusMessage,
+          showSnippets: initialState.showSnippets,
+          showCanvasOnly: initialState.showCanvasOnly,
+        })),
     }),
     {
       name: 'composer-storage',
