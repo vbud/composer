@@ -64,12 +64,12 @@ export default function FilePageWrapper() {
   const router = useRouter();
   const { fileId } = router.query;
 
-  const fileFound = useStore(
+  const fileFound: boolean = useStore(
     (s) => typeof fileId === 'string' && Object.keys(s.files).includes(fileId)
   );
 
   // Render nothing if a file does not exist for the specified fileId
-  if (typeof fileId !== 'string' || fileFound === undefined) {
+  if (typeof fileId !== 'string' || !fileFound) {
     // When we replace this with a "file not found" page in the future, we will
     // also need to handle the edge case of deleting a file. There is a brief
     // possible state where the file does not exist because it has been deleted,
