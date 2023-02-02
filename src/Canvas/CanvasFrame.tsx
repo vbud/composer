@@ -8,7 +8,7 @@ import {
   shallow,
   FileId,
   SelectedFrameId,
-  FileFrame,
+  Frame,
   CanvasPosition,
 } from 'src/store';
 import { CompileAndRenderCode } from './CompileAndRenderCode';
@@ -43,7 +43,7 @@ const directionToDeltas: Record<MoveInterval['direction'], [number, number]> = {
 interface CanvasFrameProps {
   fileId: FileId;
   selectedFrameId: SelectedFrameId;
-  frame: FileFrame;
+  frame: Frame;
   canvasPosition: CanvasPosition;
   canvasEl: HTMLDivElement | null;
 }

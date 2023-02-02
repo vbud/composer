@@ -26,8 +26,7 @@ export interface CanvasPosition {
 
 export type FrameId = string;
 
-// TODO: FileFrame => Frame?
-export interface FileFrame {
+export interface Frame {
   id: FrameId;
   code: string;
   x: number;
@@ -37,7 +36,7 @@ export interface FileFrame {
   cursorPosition: number;
 }
 
-export type FileFrames = Record<FrameId, FileFrame>;
+export type FileFrames = Record<FrameId, Frame>;
 
 interface StatusMessage {
   message: string;
