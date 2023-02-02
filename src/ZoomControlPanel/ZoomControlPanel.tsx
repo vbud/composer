@@ -21,15 +21,13 @@ export default function ZoomControlPanel() {
           <Button
             title="Reset canvas zoom to default"
             data-testid="reset-canvas-zoom"
-            onClick={() => {
-              if (canvasViewport) {
-                canvasViewport.camera.recenter(
-                  canvasViewport.centerX,
-                  canvasViewport.centerY,
-                  1
-                );
-              }
-            }}
+            onClick={() =>
+              canvasViewport?.camera.recenter(
+                canvasViewport.centerX,
+                canvasViewport.centerY,
+                1
+              )
+            }
           >
             Reset zoom
           </Button>
