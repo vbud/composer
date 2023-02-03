@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import classnames from 'classnames';
-import fuzzy from 'fuzzy';
+import Fuse from 'fuse.js';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { useStore, shallow, FileId } from 'src/store';
@@ -19,14 +19,17 @@ import * as styles from './SnippetBrowser.css';
 
 type HighlightIndex = number | null;
 
-const filterSnippetsForTerm = (term: string) =>
-  term
-    ? fuzzy
-        .filter(term, snippets, {
-          extract: (snippet) => `${snippet.componentName} ${snippet.name}`,
-        })
-        .map(({ original, score }) => ({ ...original, score }))
-    : snippets;
+const snippetsSearcher = new Fuse(snippets, {
+  keys: [
+    { name: 'componentName', weight: 2 },
+    { name: 'name', weight: 1 },
+  ],
+  ignoreLocation: true,
+  threshold: 0.5,
+});
+
+const filterSnippetsForTerm = (term: string): Snippet[] =>
+  term ? snippetsSearcher.search(term).map(({ item }) => item) : snippets;
 
 const scrollToHighlightedSnippet = (
   listEl: HTMLUListElement | null,
