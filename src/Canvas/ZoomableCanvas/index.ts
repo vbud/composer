@@ -2,4 +2,4 @@
 // modified to better fit our needs.
 export { NoPanArea } from './NoPanArea';
 export { Space } from './Space';
-export { ViewPort } from './ViewPort';
+export { ViewPort, type PressEventCoordinates } from './ViewPort';

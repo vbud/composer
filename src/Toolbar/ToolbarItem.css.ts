@@ -26,10 +26,10 @@ export const root = style({
     },
 
     [`&${active}:not(${disabled})`]: {
-      color: colorPaletteVars.foreground.accent,
+      background: colorPaletteVars.background.accent,
     },
 
-    [[`&:not(${disabled}):focus`, `&:not(${disabled}):hover`].join(',')]: {
+    [`&:not(${active}):not(${disabled}):hover`]: {
       backgroundColor: colorPaletteVars.background.selection,
     },
   },

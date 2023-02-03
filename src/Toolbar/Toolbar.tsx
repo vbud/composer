@@ -15,20 +15,24 @@ import * as styles from './Toolbar.css';
 
 export default function Toolbar({ fileId }: { fileId: FileId }) {
   const [
-    activeToolbarPanel,
     canvasPosition,
+    activeToolbarPanel,
+    showSnippets,
+    canvasDrawMode,
     openToolbarPanel,
     closeToolbarPanel,
     toggleShowSnippets,
-    createFrame,
+    setCanvasDrawMode,
   ] = useStore(
     (s) => [
-      s.activeToolbarPanel,
       s.files[fileId].canvasPosition,
+      s.activeToolbarPanel,
+      s.showSnippets,
+      s.canvasDrawMode,
       s.openToolbarPanel,
       s.closeToolbarPanel,
       s.toggleShowSnippets,
-      s.createFrame,
+      s.setCanvasDrawMode,
     ],
     shallow
   );
@@ -48,9 +52,10 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
         </ToolbarItemLink>
         <ToolbarItemButton
           title={`Insert snippet (${
-            navigator.platform.match('Mac') ? '\u2318' : 'Ctrl + '
+            navigator.platform.match('Mac') ? '\u2318' : '\u2303'
           }K)`}
           data-testid="toggleSnippets"
+          active={showSnippets}
           onClick={() => {
             toggleShowSnippets();
           }}
@@ -58,11 +63,10 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
           <AddSnippetIcon />
         </ToolbarItemButton>
         <ToolbarItemButton
-          title="Add new frame to canvas"
+          title="Add new frame to canvas (F)"
           data-testid="addFrame"
-          onClick={() => {
-            createFrame(fileId);
-          }}
+          active={canvasDrawMode === 'frame'}
+          onClick={() => setCanvasDrawMode('frame')}
         >
           <AddFrameIcon />
         </ToolbarItemButton>
@@ -71,27 +75,24 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
       <div className={styles.actionsRight}>
         <ToolbarItemButton
           title="Zoom level"
-          onClick={() => {
-            openToolbarPanel('canvasZoomControl');
-          }}
           data-testid="canvasZoomLevel"
+          active={isZoomControlOpen}
+          onClick={() => openToolbarPanel('canvasZoomControl')}
         >
           {Math.round(canvasPosition.zoom * 100)}%
         </ToolbarItemButton>
         <ToolbarItemButton
-          active={isSettingsOpen}
           title="Edit settings"
-          onClick={() => {
-            openToolbarPanel('settings');
-          }}
+          active={isSettingsOpen}
+          onClick={() => openToolbarPanel('settings')}
         >
           <SettingsIcon />
         </ToolbarItemButton>
       </div>
       {isOpen && (
         <div ref={panelRef} className={styles.panel}>
-          {isSettingsOpen && <SettingsPanel fileId={fileId} />}
           {isZoomControlOpen && <ZoomControlPanel />}
+          {isSettingsOpen && <SettingsPanel fileId={fileId} />}
         </div>
       )}
     </div>

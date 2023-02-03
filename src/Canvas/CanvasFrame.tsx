@@ -45,7 +45,7 @@ interface CanvasFrameProps {
   selectedFrameId: SelectedFrameId;
   frame: Frame;
   canvasPosition: CanvasPosition;
-  canvasEl: HTMLDivElement | null;
+  canvasRef: React.RefObject<HTMLElement>;
 }
 
 export const CanvasFrame = ({
@@ -53,10 +53,10 @@ export const CanvasFrame = ({
   selectedFrameId,
   frame,
   canvasPosition,
-  canvasEl,
+  canvasRef,
 }: CanvasFrameProps) => {
-  const [canvasViewport, moveFrame, selectFrame, deleteFrame] = useStore(
-    (s) => [s.canvasViewport, s.moveFrame, s.selectFrame, s.deleteFrame],
+  const [canvasViewport, moveFrame, selectFrame] = useStore(
+    (s) => [s.canvasViewport, s.moveFrame, s.selectFrame],
     shallow
   );
   const dragStartPosition = React.useRef({ x: 0, y: 0 });
@@ -165,8 +165,9 @@ export const CanvasFrame = ({
             x: d.x,
             y: d.y,
           };
-          canvasEl &&
-            (canvasClientRect.current = canvasEl.getBoundingClientRect());
+          canvasRef.current &&
+            (canvasClientRect.current =
+              canvasRef.current.getBoundingClientRect());
         }}
         onDrag={(event) => {
           const { clientX, clientY } = event as MouseEvent;
@@ -191,12 +192,6 @@ export const CanvasFrame = ({
           event.stopPropagation();
           selectFrame(fileId, frameId);
         }}
-        onKeyDown={(event: React.KeyboardEvent) => {
-          if (event.code === 'Backspace') {
-            deleteFrame(fileId, frameId);
-          }
-        }}
-        tabIndex={0} // make element focusable so it can handle keyboard events
       >
         <div className={styles.frameName}>{frameId}</div>
         <div className={styles.frame}>

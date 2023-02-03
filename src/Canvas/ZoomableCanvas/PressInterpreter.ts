@@ -30,8 +30,8 @@ const POTENTIAL_TAP_BOUNDS_DEFAULT: ClientPixelUnit = 8;
  * `undefined`) detailing how the `PressInterpreter` should handle the
  * press.
  */
-type DecidePressHandlingCallback = (
-  _e: MouseEvent | TouchEvent,
+export type DecidePressHandlingCallback = (
+  e: MouseEvent | TouchEvent,
   coordinates: PressEventCoordinates
 ) => PressHandlingOptions | undefined;
 

@@ -46,6 +46,8 @@ interface StatusMessage {
 
 type ToolbarPanel = 'settings' | 'canvasZoomControl';
 
+type CanvasDrawMode = 'frame' | null;
+
 export type SelectedFrameId = string | null;
 
 interface State {
@@ -60,6 +62,7 @@ interface State {
   showCanvasOnly: boolean;
   activeToolbarPanel: ToolbarPanel | null;
   statusMessage: StatusMessage | null;
+  canvasDrawMode: CanvasDrawMode | null;
 }
 
 interface Actions {
@@ -68,7 +71,7 @@ interface Actions {
   deleteFile: (fileId: FileId) => void;
   renameFile: (fileId: FileId, newName: string) => void;
   // frame
-  createFrame: (fileId: FileId) => void;
+  createFrame: (fileId: FileId, { x, y }: { x: number; y: number }) => void;
   deleteFrame: (fileId: FileId, frameId: FrameId) => void;
   selectFrame: (fileId: FileId, frameId: SelectedFrameId) => void;
   moveFrame: (
@@ -110,6 +113,7 @@ interface Actions {
   updateColorScheme: (colorScheme: ColorScheme) => void;
   toggleShowSnippets: () => void;
   toggleShowCanvasOnly: () => void;
+  setCanvasDrawMode: (canvasDrawMode: CanvasDrawMode) => void;
   resetFileUIState: () => void;
 }
 
@@ -123,9 +127,10 @@ const initialState: State = {
   canvasViewport: null,
   activeToolbarPanel: null,
   statusMessage: null,
+  canvasDrawMode: null,
   showSnippets: false,
   showCanvasOnly: false,
-};
+} as const;
 
 export const useStore = create<State & Actions>()(
   persist(
@@ -165,16 +170,16 @@ export const useStore = create<State & Actions>()(
             state.files[fileId].name = newName;
           })
         ),
-      createFrame: (fileId) =>
+      createFrame: (fileId, { x, y }) =>
         set(
           produce((state) => {
             const newFrame = {
               id: crypto.randomUUID(),
               code: '<>\n  \n</>',
-              x: 0,
-              y: 0,
-              width: 500,
-              height: 500,
+              x,
+              y,
+              width: 400,
+              height: 400,
               // cursor should be located between the React Fragment start and end tags
               cursorPosition: 5,
             };
@@ -188,7 +193,7 @@ export const useStore = create<State & Actions>()(
           produce((state) => {
             const file = state.files[fileId];
             delete file.frames[frameId];
-            file.selectedFrameId = null;
+            frameId === file.selectedFrameId && (file.selectedFrameId = null);
           })
         ),
       selectFrame: (fileId, frameId) =>
@@ -305,6 +310,12 @@ export const useStore = create<State & Actions>()(
 
           return newState;
         }),
+      setCanvasDrawMode: (canvasDrawMode) =>
+        set((state) => ({
+          ...state,
+          canvasDrawMode,
+        })),
+
       // reset all non-persisted UI state, except for `canvasViewport` and
       // `editorView`, which are reset by `destroyCanvas` and `destroyEditor`
       resetFileUIState: () =>

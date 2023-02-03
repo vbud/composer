@@ -6,7 +6,11 @@ import {
   InteractableComponent,
 } from './Interactable';
 import { NoPanArea } from './NoPanArea';
-import { PressHandlingOptions, PressInterpreter } from './PressInterpreter';
+import {
+  DecidePressHandlingCallback,
+  PressHandlingOptions,
+  PressInterpreter,
+} from './PressInterpreter';
 import { SpaceContext, SpaceContextType } from './SpaceContext';
 import { PressEventCoordinates, ViewPort } from './ViewPort';
 
@@ -32,7 +36,7 @@ interface SpaceProps extends React.PropsWithChildren {
    * rendered. This can be used, for example, to make the `ViewPort` focus on a
    * certain portion of the virtual space.
    */
-  readonly onCreate?: (viewPort: ViewPort) => void;
+  readonly onCreate?: (viewPort: ViewPort, node: HTMLDivElement) => void;
   /**
    * Called after the `ViewPort` is destroyed.
    */
@@ -42,6 +46,19 @@ interface SpaceProps extends React.PropsWithChildren {
    */
   readonly onUpdated?: (viewPort: ViewPort) => void;
 
+  /**
+   * Optional callback to be called when a press is initiated in the space.
+   * Generally you should prefer to use `Pressable` to handle presses, but
+   * this can be used as a lower level alternative. The result of the callback
+   * is a `PressHandlingOptions` (or `undefined`) that describes how the
+   * press should be handled.
+   *
+   * If the callback returns a `PressHandlingOptions` it will take precedence
+   * over `Pressable` and `NoPanArea` components (even if the press was on
+   * one of those).
+   */
+  readonly onDecideHowToHandlePress?: DecidePressHandlingCallback;
+  readonly onPressOutsideInteractable?: DecidePressHandlingCallback;
   /**
    * Called when a mouse hover event happens anywhere in the `Space`.
    */
@@ -57,6 +74,8 @@ interface SpaceProps extends React.PropsWithChildren {
     e: MouseEvent,
     coordinates: PressEventCoordinates
   ) => void;
+
+  readonly tabIndex?: number;
 }
 
 interface SpaceState {
@@ -64,16 +83,6 @@ interface SpaceState {
   readonly transformStyle?: React.CSSProperties;
 }
 
-/**
- * This component makes its children zoomable and pan-able.
- *
- * Please read the [Guide](../../Guide.md) for all the details on how to use
- * this.
- *
- * ## Props
- *
- * See `SpaceProps`.
- */
 export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   /**
    * Describes what portion of the virtual coordinate space is visible inside
@@ -107,17 +116,20 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   }
 
   public render() {
+    const { contextValue, transformStyle } = this.state;
+    const { id, className, style, tabIndex, children } = this.props;
     return (
       <div
         ref={this.setOuterDivRefAndCreateViewPort}
-        id={this.props.id}
-        className={classNames(styles.root, this.props.className)}
-        style={this.props.style}
+        id={id}
+        className={classNames(styles.root, className)}
+        style={style}
+        tabIndex={tabIndex}
       >
-        {this.state.contextValue && (
-          <SpaceContext.Provider value={this.state.contextValue}>
-            <div className={styles.inner} style={this.state.transformStyle}>
-              {this.props.children}
+        {contextValue && (
+          <SpaceContext.Provider value={contextValue}>
+            <div className={styles.inner} style={transformStyle}>
+              {children}
             </div>
           </SpaceContext.Provider>
         )}
@@ -182,9 +194,17 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
   };
 
   private handleDecideHowToHandlePress = (
-    e: MouseEvent | TouchEvent
+    e: MouseEvent | TouchEvent,
+    coordinates: PressEventCoordinates
   ): PressHandlingOptions | undefined => {
     if (e.target instanceof HTMLElement) {
+      if (this.props.onDecideHowToHandlePress) {
+        const result = this.props.onDecideHowToHandlePress(e, coordinates);
+        if (result) {
+          return result;
+        }
+      }
+
       const interactableId = getInteractableIdMostApplicableToElement(e.target);
       const interactable =
         (interactableId && this.interactableRegistry.get(interactableId)) ||
@@ -202,6 +222,10 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
 
       if (interactable && interactable instanceof NoPanArea) {
         return { ignorePressEntirely: true };
+      }
+
+      if (this.props.onPressOutsideInteractable) {
+        return this.props.onPressOutsideInteractable(e, coordinates);
       }
     }
   };
@@ -229,7 +253,7 @@ export class Space extends React.PureComponent<SpaceProps, SpaceState> {
         ...this.pressInterpreter.pressHandlers,
       });
 
-      this.props.onCreate?.(this.viewPort);
+      this.props.onCreate?.(this.viewPort, node);
 
       this.outerDivElement.addEventListener('dragstart', this.handleDragStart);
 

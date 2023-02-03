@@ -21,6 +21,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
     editorView,
     toggleShowCanvasOnly,
     toggleShowSnippets,
+    setCanvasDrawMode,
   ] = useStore(
     (s) => [
       s.files[fileId].name,
@@ -30,6 +31,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
       s.editorView,
       s.toggleShowCanvasOnly,
       s.toggleShowSnippets,
+      s.setCanvasDrawMode,
     ],
     shallow
   );
@@ -44,6 +46,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
   useHotkeys('meta+e', () => editorView?.focus(), useHotkeysOptions, [
     editorView,
   ]);
+  useHotkeys<HTMLDivElement>('f', () => setCanvasDrawMode('frame'));
 
   return (
     <div className={styles.root}>

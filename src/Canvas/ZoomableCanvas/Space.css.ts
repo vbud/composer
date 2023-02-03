@@ -6,7 +6,6 @@ export const root = style({
   bottom: 0,
   left: 0,
   right: 0,
-  cursor: 'default',
 });
 
 export const inner = style({
