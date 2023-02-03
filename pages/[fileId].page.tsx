@@ -18,6 +18,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
     selectedFrameId,
     showSnippets,
     showCanvasOnly,
+    editorView,
     toggleShowCanvasOnly,
     toggleShowSnippets,
   ] = useStore(
@@ -26,6 +27,7 @@ function FilePage({ fileId }: { fileId: FileId }) {
       s.files[fileId].selectedFrameId,
       s.showSnippets,
       s.showCanvasOnly,
+      s.editorView,
       s.toggleShowCanvasOnly,
       s.toggleShowSnippets,
     ],
@@ -39,6 +41,9 @@ function FilePage({ fileId }: { fileId: FileId }) {
   };
   useHotkeys('meta+\\', () => toggleShowCanvasOnly(), useHotkeysOptions);
   useHotkeys('meta+k', () => toggleShowSnippets(), useHotkeysOptions);
+  useHotkeys('meta+e', () => editorView?.focus(), useHotkeysOptions, [
+    editorView,
+  ]);
 
   return (
     <div className={styles.root}>
