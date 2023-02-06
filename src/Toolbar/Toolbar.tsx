@@ -10,6 +10,7 @@ import AddSnippetIcon from '../icons/AddSnippetIcon';
 import AddFrameIcon from '../icons/AddFrameIcon';
 import SettingsIcon from '../icons/SettingsIcon';
 import FileName from './FileName';
+import { Text } from 'src/Text/Text';
 
 import * as styles from './Toolbar.css';
 
@@ -79,7 +80,7 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
           active={isZoomControlOpen}
           onClick={() => openToolbarPanel('canvasZoomControl')}
         >
-          {Math.round(canvasPosition.zoom * 100)}%
+          <Text>{Math.round(canvasPosition.zoom * 100)}%</Text>
         </ToolbarItemButton>
         <ToolbarItemButton
           title="Edit settings"
