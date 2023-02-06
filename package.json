@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint && prettier --list-different '**/*.{js,md,ts,tsx}' && tsc && ts-unused-exports tsconfig.json",
+    "format": "prettier --write '**/*.{js,md,ts,tsx}'",
     "test": "jest"
   },
   "dependencies": {
