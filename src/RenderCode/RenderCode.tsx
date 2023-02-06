@@ -1,5 +1,4 @@
 import React from 'react';
-
 import CatchErrors from './CatchErrors';
 
 function evalCode(code: string | undefined, scope: Record<string, any>) {

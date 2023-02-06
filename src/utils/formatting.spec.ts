@@ -1,7 +1,6 @@
 import dedent from 'dedent';
 import { cursorCoordinatesToCursorPosition } from './cursor';
-
-import { formatCode, formatAndInsert } from './formatting';
+import { formatAndInsert, formatCode } from './formatting';
 
 // Test utility method for adding the EOF newline that dedent would otherwise
 // strip.

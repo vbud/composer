@@ -1,45 +1,43 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import {
-  keymap,
-  highlightSpecialChars,
-  drawSelection,
-  highlightActiveLine,
-  dropCursor,
-  rectangularSelection,
-  crosshairCursor,
-  lineNumbers,
-  highlightActiveLineGutter,
-  EditorView,
-  ViewUpdate,
-} from '@codemirror/view';
-import { EditorState, TransactionSpec } from '@codemirror/state';
-import {
-  syntaxHighlighting,
-  indentOnInput,
-  bracketMatching,
-  foldGutter,
-  foldKeymap,
-} from '@codemirror/language';
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import {
   autocompletion,
   closeBrackets,
   closeBracketsKeymap,
 } from '@codemirror/autocomplete';
-import { Diagnostic, linter, lintKeymap } from '@codemirror/lint';
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { javascript } from '@codemirror/lang-javascript';
+import {
+  bracketMatching,
+  foldGutter,
+  foldKeymap,
+  indentOnInput,
+  syntaxHighlighting,
+} from '@codemirror/language';
+import { Diagnostic, linter, lintKeymap } from '@codemirror/lint';
+import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { EditorState, TransactionSpec } from '@codemirror/state';
+import {
+  crosshairCursor,
+  drawSelection,
+  dropCursor,
+  EditorView,
+  highlightActiveLine,
+  highlightActiveLineGutter,
+  highlightSpecialChars,
+  keymap,
+  lineNumbers,
+  rectangularSelection,
+  ViewUpdate,
+} from '@codemirror/view';
 import { debounce } from 'lodash';
-
-import { useStore, shallow, FileId, FrameId } from 'src/store';
-import { formatCode } from 'src/utils/formatting';
+import { useCallback, useEffect, useRef } from 'react';
+import { FileId, FrameId, shallow, useStore } from 'src/store';
 import { compileJsx } from 'src/utils/compileJsx';
-import { cursorCoordinatesToCursorPosition } from 'src/utils/cursor';
-import { getCompletions } from './completions';
 import { hints } from 'src/utils/components';
-import { highlightStyle, themeExtension } from './styles';
-
+import { cursorCoordinatesToCursorPosition } from 'src/utils/cursor';
+import { formatCode } from 'src/utils/formatting';
 import * as styles from './CodeEditor.css';
+import { getCompletions } from './completions';
+import { highlightStyle, themeExtension } from './styles';
 
 const errorLinter = linter((view) => {
   const diagnostics: Diagnostic[] = [];

@@ -1,9 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react';
-
-import { useStore, shallow, FileId } from 'src/store';
-import { useInteractOutside } from 'src/utils/useInteractOutside';
+import { useCallback, useRef, useState } from 'react';
+import { FileId, shallow, useStore } from 'src/store';
 import { Text } from 'src/Text/Text';
-
+import { useInteractOutside } from 'src/utils/useInteractOutside';
 import * as styles from './FileName.css';
 
 export default function FileName({ fileId }: { fileId: FileId }) {

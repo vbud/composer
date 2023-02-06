@@ -1,9 +1,9 @@
+import { omit } from 'lodash';
 import { ElementType } from 'react';
 import * as reactIs from 'react-is';
-import { omit } from 'lodash';
 // @ts-ignore
-import parsePropTypes from 'parse-prop-types';
 import * as muiComponents from '@mui/material';
+import parsePropTypes from 'parse-prop-types';
 
 const staticTypes = __COMPOSER_GLOBAL__STATIC_TYPES__;
 

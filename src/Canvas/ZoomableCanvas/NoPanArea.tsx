@@ -1,10 +1,8 @@
-import * as React from 'react';
 import classNames from 'classnames';
-
+import * as React from 'react';
 import { InteractableIdAttributeName } from './Interactable';
-import { SpaceContext, SpaceContextType } from './SpaceContext';
-
 import * as styles from './NoPanArea.css';
+import { SpaceContext, SpaceContextType } from './SpaceContext';
 
 interface NoPanAreaProps extends React.PropsWithChildren {
   readonly id?: string;

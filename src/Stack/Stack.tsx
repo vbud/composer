@@ -1,6 +1,5 @@
-import React, { ReactElement, Children } from 'react';
 import classnames from 'classnames';
-
+import { Children, ReactElement } from 'react';
 import { Divider } from '../Divider/Divider';
 
 import * as styles from './Stack.css';

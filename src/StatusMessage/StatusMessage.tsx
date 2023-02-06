@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
-
-import { useStore, shallow } from 'src/store';
-import { Text } from '../Text/Text';
+import { useCallback, useEffect, useRef } from 'react';
+import { shallow, useStore } from 'src/store';
 import DismissIcon from '../icons/DismissIcon';
-
+import { Text } from '../Text/Text';
 import * as styles from './StatusMessage.css';
 
 const statusMessageDuration = 3000;

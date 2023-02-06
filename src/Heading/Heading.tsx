@@ -1,6 +1,5 @@
-import React, { ElementType, ReactNode } from 'react';
 import classnames from 'classnames';
-
+import React, { ElementType, ReactNode } from 'react';
 import * as styles from './Heading.css';
 
 interface Props {

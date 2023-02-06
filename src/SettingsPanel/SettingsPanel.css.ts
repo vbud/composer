@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { colorPaletteVars, vars } from '../theme.css';
 import { darkModeDataAttribute } from 'src/globals.css';
+import { colorPaletteVars, vars } from '../theme.css';
 
 export const fieldset = style({
   border: 0,

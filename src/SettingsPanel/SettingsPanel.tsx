@@ -1,17 +1,14 @@
-import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-
-import { useStore, shallow, FileId } from 'src/store';
-import { Heading } from '../Heading/Heading';
-import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
-import { ColorScheme } from 'src/utils/colorScheme';
-import { Stack } from '../Stack/Stack';
+import { ReactElement } from 'react';
 import { Button } from 'src/Button/Button';
-
-import ColorModeSystemIcon from '../icons/ColorModeSystemIcon';
-import ColorModeLightIcon from '../icons/ColorModeLightIcon';
+import { FileId, shallow, useStore } from 'src/store';
+import { ColorScheme } from 'src/utils/colorScheme';
+import { Heading } from '../Heading/Heading';
 import ColorModeDarkIcon from '../icons/ColorModeDarkIcon';
-
+import ColorModeLightIcon from '../icons/ColorModeLightIcon';
+import ColorModeSystemIcon from '../icons/ColorModeSystemIcon';
+import { Stack } from '../Stack/Stack';
+import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
 import * as styles from './SettingsPanel.css';
 
 const colorModeIcon: Record<ColorScheme, ReactElement> = {

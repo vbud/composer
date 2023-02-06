@@ -1,14 +1,12 @@
-import React from 'react';
-import { Space, PressEventCoordinates } from './ZoomableCanvas';
-import { useDebouncedCallback } from 'use-debounce';
-import { useHotkeys } from 'react-hotkeys-hook';
 import classNames from 'classnames';
-
-import { useStore, shallow, FileId } from 'src/store';
-import { CanvasFrame } from './CanvasFrame';
+import React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { FileId, shallow, useStore } from 'src/store';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
-
+import { useDebouncedCallback } from 'use-debounce';
 import * as styles from './Canvas.css';
+import { CanvasFrame } from './CanvasFrame';
+import { PressEventCoordinates, Space } from './ZoomableCanvas';
 
 export const Canvas = ({ fileId }: { fileId: FileId }) => {
   const [

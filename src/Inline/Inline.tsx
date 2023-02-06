@@ -1,6 +1,5 @@
-import React, { ReactElement, Children } from 'react';
 import classnames from 'classnames';
-
+import { Children, ReactElement } from 'react';
 import * as styles from './Inline.css';
 
 interface ReactNodeArray extends Array<ReactNodeNoStrings> {}

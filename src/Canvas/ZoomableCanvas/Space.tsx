@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import * as React from 'react';
-
 import {
   getInteractableIdMostApplicableToElement,
   InteractableComponent,
@@ -11,10 +10,9 @@ import {
   PressHandlingOptions,
   PressInterpreter,
 } from './PressInterpreter';
+import * as styles from './Space.css';
 import { SpaceContext, SpaceContextType } from './SpaceContext';
 import { PressEventCoordinates, ViewPort } from './ViewPort';
-
-import * as styles from './Space.css';
 
 interface SpaceProps extends React.PropsWithChildren {
   /**

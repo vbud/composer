@@ -1,18 +1,15 @@
-import React from 'react';
 import classnames from 'classnames';
 import { Resizable } from 're-resizable';
-import { useDebouncedCallback } from 'use-debounce';
-
-import { CodeEditor } from './CodeEditor';
 import {
-  useStore,
-  shallow,
   FileId,
-  SelectedFrameId,
   initialEditorWidth,
+  SelectedFrameId,
+  shallow,
+  useStore,
 } from 'src/store';
 import { Text } from 'src/Text/Text';
-
+import { useDebouncedCallback } from 'use-debounce';
+import { CodeEditor } from './CodeEditor';
 import * as styles from './ResizableCodeEditor.css';
 
 export const ResizableCodeEditor = ({

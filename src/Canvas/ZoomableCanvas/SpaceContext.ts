@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { InteractableComponent } from './Interactable';
 import { ViewPort } from './ViewPort';
 

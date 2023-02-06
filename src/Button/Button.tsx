@@ -1,6 +1,5 @@
-import React, { ElementType, AllHTMLAttributes, ReactElement } from 'react';
 import classnames from 'classnames';
-
+import { AllHTMLAttributes, ElementType, ReactElement } from 'react';
 import * as styles from './Button.css';
 
 interface BaseProps {

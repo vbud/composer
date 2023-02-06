@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
 import classnames from 'classnames';
 import Link from 'next/link';
-
+import { ReactNode } from 'react';
 import * as styles from './ToolbarItem.css';
 
 interface Props {

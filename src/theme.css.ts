@@ -1,6 +1,6 @@
 import { createGlobalTheme, createThemeContract } from '@vanilla-extract/css';
-import { dark, light } from './palettes';
 import { darkModeDataAttribute } from './globals.css';
+import { dark, light } from './palettes';
 
 const fontFamily = 'Helvetica, arial, sans-serif';
 export const vars = createGlobalTheme(':root', {

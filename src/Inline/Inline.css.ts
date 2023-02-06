@@ -1,5 +1,5 @@
-import { calc } from '@vanilla-extract/css-utils';
 import { createVar, style } from '@vanilla-extract/css';
+import { calc } from '@vanilla-extract/css-utils';
 import { vars } from '../theme.css';
 
 const size = createVar();

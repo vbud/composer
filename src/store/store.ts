@@ -1,10 +1,9 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import produce from 'immer';
 import { EditorView } from 'codemirror';
-
+import produce from 'immer';
 import { ViewPort } from 'src/Canvas/ZoomableCanvas';
 import { ColorScheme } from 'src/utils/colorScheme';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type FileId = string;
 

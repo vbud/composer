@@ -1,11 +1,9 @@
-import React, { ReactElement } from 'react';
-import dynamic from 'next/dynamic';
 import type { AppProps } from 'next/app';
-
+import dynamic from 'next/dynamic';
+import { ReactElement } from 'react';
 import AppErrorBoundary from 'src/AppErrorBoundary';
-import { useColorScheme } from 'src/utils/colorScheme';
-
 import 'src/globals.css';
+import { useColorScheme } from 'src/utils/colorScheme';
 
 // Everything that happens in this component and its descendants will not render
 // on the server, meaning, for example, that you can rely on document and window

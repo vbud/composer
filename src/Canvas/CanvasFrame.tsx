@@ -1,20 +1,18 @@
-import React, { useCallback, useRef } from 'react';
 import classNames from 'classnames';
-import { NoPanArea } from './ZoomableCanvas';
+import React, { useCallback, useRef } from 'react';
 import { Rnd } from 'react-rnd';
-
 import {
-  useStore,
-  shallow,
-  FileId,
-  SelectedFrameId,
-  Frame,
   CanvasPosition,
+  FileId,
+  Frame,
+  SelectedFrameId,
+  shallow,
+  useStore,
 } from 'src/store';
-import { CompileAndRenderCode } from './CompileAndRenderCode';
 import { components } from 'src/utils/components';
-
 import * as styles from './CanvasFrame.css';
+import { CompileAndRenderCode } from './CompileAndRenderCode';
+import { NoPanArea } from './ZoomableCanvas';
 
 interface MoveInterval {
   direction:

@@ -1,5 +1,4 @@
-import React, { ReactNode } from 'react';
-
+import { ReactNode } from 'react';
 import * as styles from './Strong.css';
 
 interface Props {

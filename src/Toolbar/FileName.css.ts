@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css';
-
 import { vars } from 'src/theme.css';
 
 export const root = style({

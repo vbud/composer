@@ -1,7 +1,7 @@
-import { calc } from '@vanilla-extract/css-utils';
 import { style } from '@vanilla-extract/css';
-import { colorPaletteVars, vars } from '../theme.css';
+import { calc } from '@vanilla-extract/css-utils';
 import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
+import { colorPaletteVars, vars } from '../theme.css';
 
 const statusGutter = '12px';
 const icon = '16px';

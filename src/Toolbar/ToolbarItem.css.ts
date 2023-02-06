@@ -1,5 +1,5 @@
-import { colorPaletteVars, vars } from '../theme.css';
 import { style } from '@vanilla-extract/css';
+import { colorPaletteVars, vars } from '../theme.css';
 
 export const disabled = style({});
 export const active = style({});

@@ -1,5 +1,4 @@
 import invariant from 'ts-invariant';
-
 import {
   ClientPixelUnit,
   PressEventCoordinates,

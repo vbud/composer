@@ -1,4 +1,3 @@
-import React from 'react';
 import { defaultIconSize } from './iconConfig';
 
 interface Props {

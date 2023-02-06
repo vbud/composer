@@ -1,7 +1,6 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Text } from '../Text/Text';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { Strong } from '../Strong/Strong';
-
+import { Text } from '../Text/Text';
 import * as styles from './CatchErrors.css';
 
 interface Props {

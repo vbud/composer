@@ -1,6 +1,5 @@
 import dedent from 'dedent';
-
-import { isValidLocation, cursorCoordinatesToCursorPosition } from './cursor';
+import { cursorCoordinatesToCursorPosition, isValidLocation } from './cursor';
 
 describe('cursor', () => {
   describe('isValidLocation', () => {

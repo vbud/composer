@@ -1,4 +1,4 @@
-import { transparentize, mix, darken } from 'polished';
+import { darken, mix, transparentize } from 'polished';
 
 const lightPalette = {
   blue0: '#e5f3ff',

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
-
-import { useStore } from 'src/store';
 import { darkModeDataAttribute } from 'src/globals.css';
+import { useStore } from 'src/store';
 
 export type ColorScheme = 'light' | 'dark' | 'system';
 const applyColorScheme = (colorScheme: Exclude<ColorScheme, 'system'>) => {

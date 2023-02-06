@@ -1,6 +1,5 @@
-import prettier from 'prettier/standalone';
 import babel from 'prettier/parser-babel';
-
+import prettier from 'prettier/standalone';
 import { insertAtCursor } from './cursor';
 
 interface CodeWithCursor {

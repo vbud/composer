@@ -1,20 +1,18 @@
-import React, { useState, useMemo, useRef } from 'react';
 import classnames from 'classnames';
 import Fuse from 'fuse.js';
-import { useDebouncedCallback } from 'use-debounce';
-
-import { useStore, shallow, FileId } from 'src/store';
+import { useMemo, useRef, useState } from 'react';
+import { Snippet, snippets } from 'src/snippets';
+import { FileId, shallow, useStore } from 'src/store';
 import { compileJsx } from 'src/utils/compileJsx';
-import { snippets, Snippet } from 'src/snippets';
 import { components } from 'src/utils/components';
-import SearchField from './SearchField/SearchField';
+import { isValidLocation } from 'src/utils/cursor';
+import { formatAndInsert } from 'src/utils/formatting';
+import { useInteractOutside } from 'src/utils/useInteractOutside';
+import { useDebouncedCallback } from 'use-debounce';
+import RenderCode from '../RenderCode/RenderCode';
 import { Strong } from '../Strong/Strong';
 import { Text } from '../Text/Text';
-import RenderCode from '../RenderCode/RenderCode';
-import { useInteractOutside } from 'src/utils/useInteractOutside';
-import { formatAndInsert } from 'src/utils/formatting';
-import { isValidLocation } from 'src/utils/cursor';
-
+import SearchField from './SearchField/SearchField';
 import * as styles from './SnippetBrowser.css';
 
 type HighlightIndex = number | null;

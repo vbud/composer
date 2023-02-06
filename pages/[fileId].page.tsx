@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-
-import { useStore, shallow, FileId } from 'src/store';
-import Toolbar from 'src/Toolbar/Toolbar';
-import { StatusMessage } from 'src/StatusMessage/StatusMessage';
 import { Canvas } from 'src/Canvas/Canvas';
-import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
-
-import * as styles from './File.css';
 import { ResizableCodeEditor } from 'src/CodeEditor/ResizableCodeEditor';
+import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
+import { StatusMessage } from 'src/StatusMessage/StatusMessage';
+import { FileId, shallow, useStore } from 'src/store';
+import Toolbar from 'src/Toolbar/Toolbar';
+import * as styles from './File.css';
 
 function FilePage({ fileId }: { fileId: FileId }) {
   const [

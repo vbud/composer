@@ -1,11 +1,9 @@
-import React from 'react';
-
 import { useStore } from 'src/store';
-import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
-import { Stack } from '../Stack/Stack';
-import { Heading } from '../Heading/Heading';
 import { Button } from '../Button/Button';
+import { Heading } from '../Heading/Heading';
 import { Inline } from '../Inline/Inline';
+import { Stack } from '../Stack/Stack';
+import { ToolbarPanel } from '../ToolbarPanel/ToolbarPanel';
 
 export default function ZoomControlPanel() {
   const canvasViewport = useStore((s) => s.canvasViewport);

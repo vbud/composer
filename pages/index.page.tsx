@@ -1,13 +1,10 @@
-import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
-import { useStore, shallow } from 'src/store';
 import { Button } from 'src/Button/Button';
-import { Text } from 'src/Text/Text';
 import { Heading } from 'src/Heading/Heading';
-
+import { shallow, useStore } from 'src/store';
+import { Text } from 'src/Text/Text';
 import * as styles from './Home.css';
 
 // ts-unused-exports:disable-next-line

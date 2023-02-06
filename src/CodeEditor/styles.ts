@@ -1,8 +1,7 @@
-import { EditorView } from '@codemirror/view';
 import { HighlightStyle } from '@codemirror/language';
+import { EditorView } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
 import { StyleSpec } from 'style-mod';
-
 import { colorPaletteVars, vars } from '../theme.css';
 
 const fontSize = '14px';

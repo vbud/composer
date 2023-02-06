@@ -1,18 +1,16 @@
-import React, { useRef } from 'react';
-
-import { useStore, shallow, FileId } from 'src/store';
+import { useRef } from 'react';
+import { FileId, shallow, useStore } from 'src/store';
+import { Text } from 'src/Text/Text';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
-import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
+import AddFrameIcon from '../icons/AddFrameIcon';
+import AddSnippetIcon from '../icons/AddSnippetIcon';
+import HomeIcon from '../icons/HomeIcon';
+import SettingsIcon from '../icons/SettingsIcon';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
 import ZoomControlPanel from '../ZoomControlPanel/ZoomControlPanel';
-import HomeIcon from '../icons/HomeIcon';
-import AddSnippetIcon from '../icons/AddSnippetIcon';
-import AddFrameIcon from '../icons/AddFrameIcon';
-import SettingsIcon from '../icons/SettingsIcon';
 import FileName from './FileName';
-import { Text } from 'src/Text/Text';
-
 import * as styles from './Toolbar.css';
+import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
 
 export default function Toolbar({ fileId }: { fileId: FileId }) {
   const [

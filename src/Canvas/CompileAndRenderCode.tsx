@@ -1,5 +1,4 @@
-import React, { useMemo, useRef } from 'react';
-
+import { useMemo, useRef } from 'react';
 import { compileJsx } from 'src/utils/compileJsx';
 import { Components } from 'src/utils/components';
 import RenderCode from '../RenderCode/RenderCode';
