@@ -5,6 +5,8 @@ export const root_isHidden = style({});
 
 export const root = style({
   display: 'flex',
+  // render this above the `Canvas` component
+  zIndex: 1,
   selectors: {
     [`&${root_isHidden}`]: {
       display: 'none',

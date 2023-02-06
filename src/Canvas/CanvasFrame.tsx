@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useCallback, useRef } from 'react';
+import { RefObject, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import {
   CanvasPosition,
@@ -9,6 +9,7 @@ import {
   shallow,
   useStore,
 } from 'src/store';
+import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
 import { components } from 'src/utils/components';
 import * as styles from './CanvasFrame.css';
 import { CompileAndRenderCode } from './CompileAndRenderCode';
@@ -43,7 +44,7 @@ interface CanvasFrameProps {
   selectedFrameId: SelectedFrameId;
   frame: Frame;
   canvasPosition: CanvasPosition;
-  canvasRef: React.RefObject<HTMLElement>;
+  canvasRef: RefObject<HTMLElement>;
 }
 
 export const CanvasFrame = ({
@@ -53,22 +54,15 @@ export const CanvasFrame = ({
   canvasPosition,
   canvasRef,
 }: CanvasFrameProps) => {
-  const [canvasViewport, moveFrame, selectFrame] = useStore(
-    (s) => [s.canvasViewport, s.moveFrame, s.selectFrame],
+  const [canvasViewport, editorWidth, moveFrame, selectFrame] = useStore(
+    (s) => [s.canvasViewport, s.editorWidth, s.moveFrame, s.selectFrame],
     shallow
   );
-  const dragStartPosition = React.useRef({ x: 0, y: 0 });
+  const dragStartPosition = useRef({ x: 0, y: 0 });
   const canvasClientRect = useRef<DOMRect | null>(null);
   const moveInterval = useRef<MoveInterval | null>(null);
 
   const { id: frameId, x, y, width, height, code } = frame;
-
-  const focusIfSelected = useCallback((node: Rnd) => {
-    if (node && frameId === selectedFrameId) {
-      node.getSelfElement()?.focus();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const moveMultiplier = 4;
   const startMoving = (direction: MoveInterval['direction']) => {
@@ -96,8 +90,8 @@ export const CanvasFrame = ({
     // Determines the boundaries near the edges of the canvas where a drag should trigger canvas panning.
     const boundaryBuffer = 16;
     const { left, top, right, bottom } = canvasClientRect.current;
-    const leftBoundary = left + boundaryBuffer;
-    const topBoundary = top + boundaryBuffer;
+    const leftBoundary = left + editorWidth + boundaryBuffer;
+    const topBoundary = top + toolbarHeight + boundaryBuffer;
     const rightBoundary = right - boundaryBuffer;
     const bottomBoundary = bottom - boundaryBuffer;
     let direction: MoveInterval['direction'] | undefined;
@@ -151,7 +145,6 @@ export const CanvasFrame = ({
       }}
     >
       <Rnd
-        ref={focusIfSelected}
         className={classNames(styles.root, {
           [styles.selected]: isSelected,
         })}

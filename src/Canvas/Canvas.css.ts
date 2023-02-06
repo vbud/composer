@@ -1,8 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
 export const root = style({
-  flexGrow: 1,
-  position: 'relative',
+  // necessary because the `tabIndex` attribute is set
   outline: 'none',
 });
 
