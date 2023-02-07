@@ -2,10 +2,10 @@ import classnames from 'classnames';
 import React, { ElementType, ReactNode } from 'react';
 import * as styles from './Text.css';
 
-interface Props {
+export interface TextProps {
   size?: 'xsmall' | 'small' | 'standard' | 'large';
-  weight?: 'regular' | 'strong';
-  tone?: 'neutral' | 'critical';
+  weight?: 'regular' | 'strong' | 'weak';
+  tone?: 'neutral' | 'accent' | 'critical';
   as?: ElementType;
   truncate?: boolean;
   className?: string;
@@ -20,7 +20,7 @@ export const Text = ({
   truncate = false,
   className,
   children,
-}: Props) =>
+}: TextProps) =>
   React.createElement(
     component,
     {
@@ -31,6 +31,7 @@ export const Text = ({
         styles[tone],
         {
           [styles.strong]: weight === 'strong',
+          [styles.weak]: weight === 'weak',
           [styles.truncate]: truncate,
         }
       ),

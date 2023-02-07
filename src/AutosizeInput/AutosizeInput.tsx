@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { capitalize } from 'lodash';
 import { useCallback, useRef, useState } from 'react';
 import { useStore } from 'src/store';
-import { Text } from 'src/Text/Text';
+import { Text, TextProps } from 'src/Text/Text';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
 import * as styles from './AutosizeInput.css';
 
@@ -12,12 +12,14 @@ export default function AutosizeInput({
   value,
   onSaveValue,
   isEditable = true,
+  textProps = {},
 }: {
   className?: string;
   name: string;
   value: string;
   onSaveValue: (value: string) => void;
   isEditable?: boolean;
+  textProps?: Omit<TextProps, 'children'>;
 }) {
   const displayStatusMessage = useStore((s) => s.displayStatusMessage);
 
@@ -71,7 +73,10 @@ export default function AutosizeInput({
     <div className={classNames(styles.root, className)}>
       {isEditing ? (
         <>
-          <Text className={styles.sizer}>
+          <Text
+            {...textProps}
+            className={classNames(styles.sizer, textProps.className)}
+          >
             <span ref={sizerSpanRef} />
           </Text>
           <input
@@ -97,7 +102,7 @@ export default function AutosizeInput({
             setIsEditing(true);
           }}
         >
-          <Text>{value}</Text>
+          <Text {...textProps}>{value}</Text>
         </div>
       )}
     </div>

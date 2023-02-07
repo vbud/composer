@@ -164,6 +164,7 @@ export const CanvasFrame = ({
         size={{ width, height }}
         position={{ x: 0, y: 0 }}
         scale={canvasPosition.zoom}
+        enableResizing={isSelected}
         onDragStart={(_event, d) => {
           dragStartPosition.current = {
             x: d.x,
@@ -209,6 +210,10 @@ export const CanvasFrame = ({
           value={frame.name}
           onSaveValue={(value) => renameFrame(fileId, frameId, value)}
           isEditable={isNameEditable}
+          textProps={{
+            className: styles.frameNameText,
+            weight: 'weak',
+          }}
         />
         <div className={styles.frame}>
           <CompileAndRenderCode code={code} components={components} />

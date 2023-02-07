@@ -9,6 +9,10 @@ export const neutral = style({
   color: colorPaletteVars.foreground.neutral,
 });
 
+export const accent = style({
+  color: colorPaletteVars.foreground.accent,
+});
+
 export const critical = style({
   color: colorPaletteVars.foreground.critical,
 });
@@ -31,6 +35,10 @@ export const large = style({
 
 export const strong = style({
   fontWeight: vars.font.weight.strong,
+});
+
+export const weak = style({
+  fontWeight: vars.font.weight.weak,
 });
 
 export const truncate = style({

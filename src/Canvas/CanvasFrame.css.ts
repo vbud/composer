@@ -5,11 +5,6 @@ export const selected = style({});
 export const root = style({
   position: 'relative',
   outline: 'none',
-  selectors: {
-    [`&${selected}`]: {
-      boxShadow: `0 0 0 4px ${colorPaletteVars.foreground.accent}`,
-    },
-  },
 });
 
 export const frameName = style({
@@ -17,8 +12,11 @@ export const frameName = style({
   width: '100%',
   transform: 'translateY(-100%)',
   padding: '4px 0',
+});
+
+export const frameNameText = style({
   selectors: {
-    [`${selected} &`]: {
+    [`${root}:hover &, ${selected} &`]: {
       color: colorPaletteVars.foreground.accent,
     },
   },
@@ -30,4 +28,12 @@ export const frame = style({
   overflow: 'auto',
   background: 'white',
   color: 'black',
+  selectors: {
+    [`${selected} &`]: {
+      boxShadow: `0 0 0 3px ${colorPaletteVars.foreground.accent}`,
+    },
+    [`${root}:hover &`]: {
+      boxShadow: `0 0 0 4px ${colorPaletteVars.foreground.accent}`,
+    },
+  },
 });
