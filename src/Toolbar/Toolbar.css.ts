@@ -21,6 +21,12 @@ export const actionsLeft = style({
   alignItems: 'center',
 });
 
+export const fileName = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
 export const actionsRight = style({
   display: 'flex',
   alignItems: 'center',

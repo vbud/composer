@@ -14,6 +14,7 @@ export const root = style({
 
 export const frameName = style({
   position: 'absolute',
+  width: '100%',
   transform: 'translateY(-100%)',
   padding: '4px 0',
   selectors: {

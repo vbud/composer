@@ -2,32 +2,36 @@ import { useRef } from 'react';
 import { FileId, shallow, useStore } from 'src/store';
 import { Text } from 'src/Text/Text';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
+import AutosizeInput from '../AutosizeInput/AutosizeInput';
 import AddFrameIcon from '../icons/AddFrameIcon';
 import AddSnippetIcon from '../icons/AddSnippetIcon';
 import HomeIcon from '../icons/HomeIcon';
 import SettingsIcon from '../icons/SettingsIcon';
 import SettingsPanel from '../SettingsPanel/SettingsPanel';
 import ZoomControlPanel from '../ZoomControlPanel/ZoomControlPanel';
-import FileName from './FileName';
 import * as styles from './Toolbar.css';
 import { ToolbarItemButton, ToolbarItemLink } from './ToolbarItem';
 
 export default function Toolbar({ fileId }: { fileId: FileId }) {
   const [
+    filename,
     canvasPosition,
     activeToolbarPanel,
     showSnippets,
     canvasDrawMode,
+    renameFile,
     openToolbarPanel,
     closeToolbarPanel,
     toggleShowSnippets,
     setCanvasDrawMode,
   ] = useStore(
     (s) => [
+      s.files[fileId].name,
       s.files[fileId].canvasPosition,
       s.activeToolbarPanel,
       s.showSnippets,
       s.canvasDrawMode,
+      s.renameFile,
       s.openToolbarPanel,
       s.closeToolbarPanel,
       s.toggleShowSnippets,
@@ -70,7 +74,12 @@ export default function Toolbar({ fileId }: { fileId: FileId }) {
           <AddFrameIcon />
         </ToolbarItemButton>
       </div>
-      <FileName fileId={fileId} />
+      <AutosizeInput
+        className={styles.fileName}
+        name="file name"
+        value={filename}
+        onSaveValue={(value) => renameFile(fileId, value)}
+      />
       <div className={styles.actionsRight}>
         <ToolbarItemButton
           title="Zoom level"

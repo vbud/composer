@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { RefObject, useRef } from 'react';
 import { Rnd } from 'react-rnd';
+import AutosizeInput from 'src/AutosizeInput/AutosizeInput';
 import {
   CanvasPosition,
   FileId,
@@ -184,7 +185,12 @@ export const CanvasFrame = ({
           selectFrame(fileId, frameId);
         }}
       >
-        <div className={styles.frameName}>{frameId}</div>
+        <AutosizeInput
+          className={styles.frameName}
+          name="frame name"
+          value={frameId}
+          onSaveValue={() => {}}
+        />
         <div className={styles.frame}>
           <CompileAndRenderCode code={code} components={components} />
         </div>

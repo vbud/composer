@@ -16,13 +16,12 @@ export const status = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  whiteSpace: 'nowrap',
   borderRadius: vars.radii.large,
   padding: `8px ${statusGutter}`,
   left: '50%',
   transform: `translateX(-50%)`,
   top: toolbarHeight + 16,
-  maxWidth: 300,
+  maxWidth: 400,
   selectors: {
     [`&${dismissable}`]: {
       paddingRight: calc(statusGutter).multiply(2).add(icon).toString(),
