@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { capitalize } from 'lodash';
 import { useCallback, useRef, useState } from 'react';
 import { useStore } from 'src/store';
@@ -10,11 +11,13 @@ export default function AutosizeInput({
   name,
   value,
   onSaveValue,
+  isEditable = true,
 }: {
   className?: string;
   name: string;
   value: string;
   onSaveValue: (value: string) => void;
+  isEditable?: boolean;
 }) {
   const displayStatusMessage = useStore((s) => s.displayStatusMessage);
 
@@ -65,7 +68,7 @@ export default function AutosizeInput({
   };
 
   return (
-    <div className={className}>
+    <div className={classNames(styles.root, className)}>
       {isEditing ? (
         <>
           <Text className={styles.sizer}>
@@ -88,6 +91,8 @@ export default function AutosizeInput({
       ) : (
         <div
           onClick={(e) => {
+            if (!isEditable) return;
+
             e.stopPropagation();
             setIsEditing(true);
           }}

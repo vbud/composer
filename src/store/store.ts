@@ -27,6 +27,7 @@ export type FrameId = string;
 
 export interface Frame {
   id: FrameId;
+  name: string;
   code: string;
   x: number;
   y: number;
@@ -68,10 +69,11 @@ interface Actions {
   // file
   createFile: () => FileId;
   deleteFile: (fileId: FileId) => void;
-  renameFile: (fileId: FileId, newName: string) => void;
+  renameFile: (fileId: FileId, name: string) => void;
   // frame
   createFrame: (fileId: FileId, { x, y }: { x: number; y: number }) => void;
   deleteFrame: (fileId: FileId, frameId: FrameId) => void;
+  renameFrame: (fileId: FileId, frameId: FrameId, name: string) => void;
   selectFrame: (fileId: FileId, frameId: SelectedFrameId) => void;
   moveFrame: (
     fileId: FileId,
@@ -150,7 +152,7 @@ export const useStore = create<State & Actions>()(
         };
 
         set(
-          produce((state) => {
+          produce<State>((state) => {
             state.files[newFile.id] = newFile;
           })
         );
@@ -159,21 +161,22 @@ export const useStore = create<State & Actions>()(
       },
       deleteFile: (fileId) =>
         set(
-          produce((state) => {
+          produce<State>((state) => {
             delete state.files[fileId];
           })
         ),
-      renameFile: (fileId, newName) =>
+      renameFile: (fileId, name) =>
         set(
-          produce((state) => {
-            state.files[fileId].name = newName;
+          produce<State>((state) => {
+            state.files[fileId].name = name;
           })
         ),
       createFrame: (fileId, { x, y }) =>
         set(
-          produce((state) => {
-            const newFrame = {
+          produce<State>((state) => {
+            const newFrame: Frame = {
               id: crypto.randomUUID(),
+              name: 'Frame',
               code: '<>\n  \n</>',
               x,
               y,
@@ -189,21 +192,27 @@ export const useStore = create<State & Actions>()(
         ),
       deleteFrame: (fileId, frameId) =>
         set(
-          produce((state) => {
+          produce<State>((state) => {
             const file = state.files[fileId];
             delete file.frames[frameId];
             frameId === file.selectedFrameId && (file.selectedFrameId = null);
           })
         ),
+      renameFrame: (fileId, frameId, name) =>
+        set(
+          produce<State>((state) => {
+            state.files[fileId].frames[frameId].name = name;
+          })
+        ),
       selectFrame: (fileId, frameId) =>
         set(
-          produce((state) => {
+          produce<State>((state) => {
             state.files[fileId].selectedFrameId = frameId;
           })
         ),
       moveFrame: (fileId, frameId, { x, y, width, height }) =>
         set(
-          produce((state) => {
+          produce<State>((state) => {
             const frame = state.files[fileId].frames[frameId];
             x !== undefined && (frame.x = x);
             y !== undefined && (frame.y = y);
@@ -218,7 +227,7 @@ export const useStore = create<State & Actions>()(
           if (code === currentCode && cursorPosition === currentCursorPosition)
             return baseState;
 
-          return produce(baseState, (state) => {
+          return produce<State>(baseState, (state) => {
             const frame = state.files[fileId].frames[frameId];
             frame.code = code;
             frame.cursorPosition = cursorPosition;
@@ -250,7 +259,7 @@ export const useStore = create<State & Actions>()(
         })),
       saveCanvasPosition: (fileId, canvasPosition) =>
         set(
-          produce((state) => {
+          produce<State>((state) => {
             state.files[fileId].canvasPosition = canvasPosition;
           })
         ),

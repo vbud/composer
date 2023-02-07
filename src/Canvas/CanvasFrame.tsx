@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { RefObject, useRef } from 'react';
+import { RefObject, useRef, useState } from 'react';
 import { Rnd } from 'react-rnd';
 import AutosizeInput from 'src/AutosizeInput/AutosizeInput';
 import {
@@ -55,15 +55,25 @@ export const CanvasFrame = ({
   canvasPosition,
   canvasRef,
 }: CanvasFrameProps) => {
-  const [canvasViewport, editorWidth, moveFrame, selectFrame] = useStore(
-    (s) => [s.canvasViewport, s.editorWidth, s.moveFrame, s.selectFrame],
-    shallow
-  );
+  const { id: frameId, x, y, width, height, code } = frame;
+
+  const [canvasViewport, editorWidth, renameFrame, moveFrame, selectFrame] =
+    useStore(
+      (s) => [
+        s.canvasViewport,
+        s.editorWidth,
+        s.renameFrame,
+        s.moveFrame,
+        s.selectFrame,
+      ],
+      shallow
+    );
+
   const dragStartPosition = useRef({ x: 0, y: 0 });
   const canvasClientRect = useRef<DOMRect | null>(null);
   const moveInterval = useRef<MoveInterval | null>(null);
 
-  const { id: frameId, x, y, width, height, code } = frame;
+  const [isNameEditable, setIsNameEditable] = useState(true);
 
   const moveMultiplier = 4;
   const startMoving = (direction: MoveInterval['direction']) => {
@@ -149,6 +159,8 @@ export const CanvasFrame = ({
         className={classNames(styles.root, {
           [styles.selected]: isSelected,
         })}
+        // override the `cursor: move` that Rnd applies
+        style={{ cursor: 'auto' }}
         size={{ width, height }}
         position={{ x: 0, y: 0 }}
         scale={canvasPosition.zoom}
@@ -162,10 +174,16 @@ export const CanvasFrame = ({
               canvasRef.current.getBoundingClientRect());
         }}
         onDrag={(event) => {
+          // Disable AutosizeInput while dragging so that dragging by the frame
+          // name does not result in an editable frame name when the drag ends
+          if (isNameEditable) setIsNameEditable(false);
           const { clientX, clientY } = event as MouseEvent;
           panIfDraggingBeyondBoundary(clientX, clientY);
         }}
         onDragStop={(_event, d) => {
+          // setTimeout is required so that the click finishes before
+          // AutosizeInput resumes listening for clicks
+          setTimeout(() => setIsNameEditable(true), 0);
           stopMoving();
           moveFrame(fileId, frameId, {
             x: x + d.x - dragStartPosition.current.x,
@@ -188,8 +206,9 @@ export const CanvasFrame = ({
         <AutosizeInput
           className={styles.frameName}
           name="frame name"
-          value={frameId}
-          onSaveValue={() => {}}
+          value={frame.name}
+          onSaveValue={(value) => renameFrame(fileId, frameId, value)}
+          isEditable={isNameEditable}
         />
         <div className={styles.frame}>
           <CompileAndRenderCode code={code} components={components} />
