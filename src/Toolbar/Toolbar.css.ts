@@ -6,10 +6,9 @@ const toolbarBorderThickness = 1;
 
 export const root = style({
   display: 'grid',
-  // render this above the `Canvas` component
+  position: 'relative',
   zIndex: 1,
-  width: '100%',
-  height: toolbarHeight - toolbarBorderThickness,
+  height: toolbarHeight,
   gridTemplateColumns: '1fr 300px 1fr',
   color: colorPaletteVars.foreground.neutral,
   backgroundColor: colorPaletteVars.background.surface,

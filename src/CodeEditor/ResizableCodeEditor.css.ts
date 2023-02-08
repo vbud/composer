@@ -1,12 +1,14 @@
 import { style } from '@vanilla-extract/css';
 import { colorPaletteVars, vars } from 'src/theme.css';
+import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
 
 export const root_isHidden = style({});
 
 export const root = style({
-  display: 'flex',
-  // render this above the `Canvas` component
+  display: 'inline-block',
+  position: 'relative',
   zIndex: 1,
+  height: `calc(100vh - ${toolbarHeight}px)`,
   selectors: {
     [`&${root_isHidden}`]: {
       display: 'none',

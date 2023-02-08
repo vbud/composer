@@ -4,6 +4,11 @@ export const darkModeDataAttribute = 'data-composer-dark';
 
 globalStyle(`html[${darkModeDataAttribute}]`, {
   colorScheme: 'dark',
+  boxSizing: 'border-box',
+});
+
+globalStyle('*, *:before, *:after', {
+  boxSizing: 'inherit',
 });
 
 globalStyle('body', {

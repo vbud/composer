@@ -53,13 +53,10 @@ function FilePage({ fileId }: { fileId: FileId }) {
       </Head>
 
       {!showCanvasOnly && <Toolbar fileId={fileId} />}
-      <div className={styles.main}>
-        <ResizableCodeEditor
-          fileId={fileId}
-          selectedFrameId={selectedFrameId}
-        />
-        <Canvas fileId={fileId} />
-      </div>
+      <ResizableCodeEditor fileId={fileId} selectedFrameId={selectedFrameId} />
+
+      <Canvas fileId={fileId} />
+
       {showSnippets && <SnippetBrowser fileId={fileId} />}
       <StatusMessage />
     </div>

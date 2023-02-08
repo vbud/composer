@@ -5,9 +5,8 @@ export const disabled = style({});
 export const active = style({});
 
 export const root = style({
-  lineHeight: '100%',
   border: 0,
-  padding: vars.space.large,
+  padding: `0 ${vars.space.large}`,
   appearance: 'none',
   display: 'inline-flex',
   alignItems: 'center',

@@ -27,39 +27,42 @@ export const ResizableCodeEditor = ({
   const updateEditorWidthDebounced = useDebouncedCallback(updateEditorWidth, 1);
 
   return (
-    <Resizable
+    <div
       className={classnames(styles.root, {
         [styles.root_isHidden]: showCanvasOnly,
       })}
-      size={{
-        height: '100%',
-        width: `${editorWidth}px`,
-      }}
-      minWidth={initialEditorWidth}
-      maxWidth="80vw"
-      onResize={(_event, _direction, { offsetWidth }) => {
-        updateEditorWidthDebounced(offsetWidth);
-      }}
-      enable={{
-        top: false,
-        right: true,
-        bottom: false,
-        left: false,
-        topRight: false,
-        bottomRight: false,
-        bottomLeft: false,
-        topLeft: false,
-      }}
     >
-      <div className={styles.editorContainer}>
-        {selectedFrameId !== null ? (
-          <CodeEditor fileId={fileId} frameId={selectedFrameId} />
-        ) : (
-          <div className={styles.emptyCodeEditor}>
-            <Text>No frame selected.</Text>
-          </div>
-        )}
-      </div>
-    </Resizable>
+      <Resizable
+        size={{
+          width: `${editorWidth}px`,
+          height: '100%',
+        }}
+        minWidth={initialEditorWidth}
+        maxWidth="80vw"
+        onResize={(_event, _direction, { offsetWidth }) => {
+          updateEditorWidthDebounced(offsetWidth);
+        }}
+        enable={{
+          top: false,
+          right: true,
+          bottom: false,
+          left: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+        }}
+      >
+        <div className={styles.editorContainer}>
+          {selectedFrameId !== null ? (
+            <CodeEditor fileId={fileId} frameId={selectedFrameId} />
+          ) : (
+            <div className={styles.emptyCodeEditor}>
+              <Text>No frame selected.</Text>
+            </div>
+          )}
+        </div>
+      </Resizable>
+    </div>
   );
 };
