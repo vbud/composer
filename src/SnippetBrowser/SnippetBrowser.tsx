@@ -4,7 +4,6 @@ import { useMemo, useRef, useState } from 'react';
 import { Snippet, snippets } from 'src/snippets';
 import { FileId, shallow, useStore } from 'src/store';
 import { compileJsx } from 'src/utils/compileJsx';
-import { components } from 'src/utils/components';
 import { isValidLocation } from 'src/utils/cursor';
 import { formatAndInsert } from 'src/utils/formatting';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
@@ -233,7 +232,7 @@ export default function SnippetBrowser({ fileId }: { fileId: FileId }) {
                 <span className={styles.snippetName}>{snippet.name}</span>
               </Text>
               <div className={styles.snippetBackground}>
-                <RenderCode code={compiledCode} scope={components} />
+                <RenderCode code={compiledCode} />
               </div>
             </li>
           );

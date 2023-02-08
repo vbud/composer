@@ -37,13 +37,12 @@ export const StatusMessage = () => {
 
   return statusMessage ? (
     <div
-      className={classnames(styles.status, {
+      className={classnames(styles.root, {
         [styles.positive]: tone === 'positive',
         [styles.critical]: tone === 'critical',
-        [styles.dismissable]: dismissable,
       })}
     >
-      <Text>{message}</Text>
+      <Text className={styles.message}>{message}</Text>
       {dismissable && (
         <div
           className={styles.dismiss}

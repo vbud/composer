@@ -39,6 +39,7 @@ export const light = {
     secondary: lightPalette.gray3,
     critical: lightPalette.red3,
     accent: lightPalette.blue2,
+    accentSoft: transparentize(0.4, lightPalette.blue2),
     positive: lightPalette.green2,
   },
   background: {
@@ -140,6 +141,7 @@ export const dark = {
     secondary: darkPalette.grey[400],
     critical: darkPalette.red[400],
     accent: darkPalette.blue[500],
+    accentSoft: transparentize(0.4, darkPalette.blue[500]),
     positive: darkPalette.mint[500],
   },
   background: {

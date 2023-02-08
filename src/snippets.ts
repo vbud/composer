@@ -1,22 +1,70 @@
-const componentSnippets = {
-  Alert: [
-    {
-      name: 'error',
-      code: '<Alert severity="error">This is an error alert — check it out!</Alert>',
-    },
-    {
-      name: 'warning',
-      code: '<Alert severity="warning">This is a warning alert — check it out!</Alert>',
-    },
-    {
-      name: 'info',
-      code: '<Alert severity="info">This is an info alert — check it out!</Alert>',
-    },
-    {
-      name: 'success',
-      code: '<Alert severity="success">This is a success alert — check it out!</Alert>',
-    },
-  ],
+import { capitalize, flatten } from 'lodash';
+
+interface SnippetDefinition {
+  name: string;
+  code: string;
+}
+
+export const componentSnippets = {
+  Alert: {
+    'default variant': ['error', 'warning', 'info', 'success'].map(
+      (severity) => ({
+        name: `${severity}`,
+        code: `<Alert severity="${severity}">${capitalize(
+          severity
+        )} alert — check it out!</Alert>`,
+      })
+    ),
+    'outlined variant': ['error', 'warning', 'info', 'success'].map(
+      (severity) => ({
+        name: `outlined - ${severity}`,
+        code: `<Alert variant="outlined" severity="${severity}">${capitalize(
+          severity
+        )} alert — check it out!</Alert>`,
+      })
+    ),
+    'filled variant': ['error', 'warning', 'info', 'success'].map(
+      (severity) => ({
+        name: `filled - ${severity}`,
+        code: `<Alert variant="filled" severity="${severity}">${capitalize(
+          severity
+        )} alert — check it out!</Alert>`,
+      })
+    ),
+    'with description': ['error', 'warning', 'info', 'success'].map(
+      (severity) => ({
+        name: `standard - ${severity} - description`,
+        code: `<Alert severity="${severity}">
+  <AlertTitle>${capitalize(severity)}</AlertTitle>
+  ${capitalize(severity)} alert — check it out!
+</Alert>`,
+      })
+    ),
+    'icon configuration': [
+      {
+        name: `icon prop`,
+        code: `<Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+  This is a success alert — check it out!
+</Alert>`,
+      },
+      {
+        name: `iconMapping prop`,
+        code: `<Alert
+  iconMapping={{
+    success: <CheckIcon fontSize="inherit" />,
+  }}
+>
+  This is a success alert — check it out!
+</Alert>`,
+      },
+      {
+        name: `no icon`,
+        code: ` <Alert icon={false} severity="success">
+  This is a success alert — check it out!
+</Alert>`,
+      },
+    ],
+  },
   Button: [
     {
       name: 'text',
@@ -186,22 +234,38 @@ const componentSnippets = {
   ],
 } as const;
 
+type ComponentName = keyof typeof componentSnippets;
+
 export interface Snippet {
-  componentName: keyof typeof componentSnippets;
+  componentName: ComponentName;
   name: string;
   code: string;
 }
 
+const snippetsFromDefinitions = (
+  snippetDefinitions: SnippetDefinition[],
+  componentName: ComponentName
+) =>
+  snippetDefinitions.map(({ name, code }) => ({
+    name,
+    code,
+    componentName,
+  }));
+
 export const snippets = Object.entries(componentSnippets).reduce(
   (acc: Snippet[], [componentName, snippetDefinitions]) => {
-    snippetDefinitions.forEach(({ name, code }) =>
-      acc.push({
-        name,
-        code,
-        componentName: componentName as Snippet['componentName'],
-      })
+    if (Array.isArray(snippetDefinitions)) {
+      return acc.concat(
+        snippetsFromDefinitions(
+          snippetDefinitions,
+          componentName as ComponentName
+        )
+      );
+    }
+    return snippetsFromDefinitions(
+      flatten(Object.values(snippetDefinitions)),
+      componentName as ComponentName
     );
-    return acc;
   },
   []
 );

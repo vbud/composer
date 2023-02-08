@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { AllHTMLAttributes, ElementType, ReactElement } from 'react';
+import { ComponentProps, ElementType, ReactElement } from 'react';
 import * as styles from './Button.css';
 
 interface BaseProps {
@@ -9,13 +9,9 @@ interface BaseProps {
   'data-testid'?: string;
 }
 
-interface ButtonProps
-  extends Omit<AllHTMLAttributes<HTMLButtonElement>, 'as'>,
-    BaseProps {}
+interface ButtonProps extends Omit<ComponentProps<'button'>, 'as'>, BaseProps {}
 
-interface LinkProps
-  extends Omit<AllHTMLAttributes<HTMLAnchorElement>, 'as'>,
-    BaseProps {}
+interface LinkProps extends Omit<ComponentProps<'a'>, 'as'>, BaseProps {}
 
 type Props = ButtonProps | LinkProps;
 
@@ -30,7 +26,7 @@ export const Button = ({
   <ButtonComponent
     className={classnames(
       styles.reset,
-      styles.base,
+      styles.root,
       {
         [styles.critical]: tone === 'critical',
       },
@@ -41,4 +37,17 @@ export const Button = ({
     {children}
     {icon ? <span className={styles.iconContainer}>{icon}</span> : null}
   </ButtonComponent>
+);
+
+export const ButtonLink = ({
+  children,
+  className,
+  ...props
+}: ComponentProps<'button'>) => (
+  <button
+    className={classnames(styles.reset, styles.buttonLink, className)}
+    {...props}
+  >
+    {children}
+  </button>
 );

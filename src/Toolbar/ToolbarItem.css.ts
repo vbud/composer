@@ -7,6 +7,7 @@ export const active = style({});
 export const root = style({
   border: 0,
   padding: `0 ${vars.space.large}`,
+  height: '100%',
   appearance: 'none',
   display: 'inline-flex',
   alignItems: 'center',

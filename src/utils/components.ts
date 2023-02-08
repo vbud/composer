@@ -1,17 +1,19 @@
+import CheckIcon from '@mui/icons-material/Check';
+import * as muiComponents from '@mui/material';
 import { omit } from 'lodash';
+import parsePropTypes from 'parse-prop-types';
 import { ElementType } from 'react';
 import * as reactIs from 'react-is';
-// @ts-ignore
-import * as muiComponents from '@mui/material';
-import parsePropTypes from 'parse-prop-types';
 
 const staticTypes = __COMPOSER_GLOBAL__STATIC_TYPES__;
 
-export type Components = Record<string, ElementType>;
+type Components = Record<string, ElementType>;
 export type Hints = Record<string, Record<string, string[]>>;
 
 function getComponents(): Components {
-  const components: Components = {};
+  const components: Components = {
+    CheckIcon,
+  };
   for (const [name, component] of Object.entries(muiComponents)) {
     if (reactIs.isValidElementType(component)) {
       components[name] = component;

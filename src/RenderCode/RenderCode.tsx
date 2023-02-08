@@ -1,4 +1,5 @@
 import React from 'react';
+import { components } from 'src/utils/components';
 import CatchErrors from './CatchErrors';
 
 function evalCode(code: string | undefined, scope: Record<string, any>) {
@@ -9,17 +10,11 @@ function evalCode(code: string | undefined, scope: Record<string, any>) {
   );
 }
 
-export default function RenderCode({
-  code,
-  scope,
-}: {
-  code: string | undefined;
-  scope: Record<string, any>;
-}) {
+export default function RenderCode({ code }: { code: string | undefined }) {
   return (
     <CatchErrors code={code}>
       {evalCode(code, {
-        ...scope,
+        ...components,
         React,
       })}
     </CatchErrors>

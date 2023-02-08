@@ -58,6 +58,7 @@ export const colorPaletteVars = createThemeContract({
     secondary: null,
     critical: null,
     accent: null,
+    accentSoft: null,
     positive: null,
   },
   background: {

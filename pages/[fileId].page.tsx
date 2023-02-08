@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Canvas } from 'src/Canvas/Canvas';
 import { ResizableCodeEditor } from 'src/CodeEditor/ResizableCodeEditor';
+import { Notifications } from 'src/Notifications/Notifications';
 import SnippetBrowser from 'src/SnippetBrowser/SnippetBrowser';
-import { StatusMessage } from 'src/StatusMessage/StatusMessage';
 import { FileId, shallow, useStore } from 'src/store';
 import Toolbar from 'src/Toolbar/Toolbar';
 import * as styles from './File.css';
@@ -58,7 +58,8 @@ function FilePage({ fileId }: { fileId: FileId }) {
       <Canvas fileId={fileId} />
 
       {showSnippets && <SnippetBrowser fileId={fileId} />}
-      <StatusMessage />
+
+      <Notifications fileId={fileId} />
     </div>
   );
 }

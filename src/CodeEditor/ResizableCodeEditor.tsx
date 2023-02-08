@@ -1,16 +1,12 @@
 import classnames from 'classnames';
 import { Resizable } from 're-resizable';
-import {
-  FileId,
-  initialEditorWidth,
-  SelectedFrameId,
-  shallow,
-  useStore,
-} from 'src/store';
+import { FileId, SelectedFrameId, shallow, useStore } from 'src/store';
 import { Text } from 'src/Text/Text';
 import { useDebouncedCallback } from 'use-debounce';
 import { CodeEditor } from './CodeEditor';
 import * as styles from './ResizableCodeEditor.css';
+
+export const initialEditorWidth = 400;
 
 export const ResizableCodeEditor = ({
   fileId,

@@ -1,31 +1,17 @@
 import { style } from '@vanilla-extract/css';
-import { calc } from '@vanilla-extract/css-utils';
-import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
 import { colorPaletteVars, vars } from '../theme.css';
 
-const statusGutter = '12px';
-const icon = '16px';
+const statusGutter = 12;
 
-export const dismissable = style({});
-export const show = style({});
 export const positive = style({});
 export const critical = style({});
 
-export const status = style({
-  position: 'absolute',
+export const root = style({
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
   borderRadius: vars.radii.large,
-  padding: `8px ${statusGutter}`,
-  left: '50%',
-  transform: `translateX(-50%)`,
-  top: toolbarHeight + 16,
+  padding: `8px ${statusGutter}px`,
   maxWidth: 400,
   selectors: {
-    [`&${dismissable}`]: {
-      paddingRight: calc(statusGutter).multiply(2).add(icon).toString(),
-    },
     [`&${positive}`]: {
       backgroundColor: colorPaletteVars.background.positive,
     },
@@ -35,14 +21,13 @@ export const status = style({
   },
 });
 
+export const message = style({
+  textAlign: 'center',
+});
+
 export const dismiss = style({
-  display: 'flex',
-  position: 'absolute',
   cursor: 'pointer',
   paddingLeft: statusGutter,
-  right: statusGutter,
-  height: icon,
-  width: icon,
   selectors: {
     [`&:not(:hover)`]: {
       opacity: 0.4,

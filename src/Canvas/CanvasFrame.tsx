@@ -11,7 +11,6 @@ import {
   useStore,
 } from 'src/store';
 import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
-import { components } from 'src/utils/components';
 import * as styles from './CanvasFrame.css';
 import { CompileAndRenderCode } from './CompileAndRenderCode';
 import { NoPanArea } from './ZoomableCanvas';
@@ -216,7 +215,7 @@ export const CanvasFrame = ({
           }}
         />
         <div className={styles.frame}>
-          <CompileAndRenderCode code={code} components={components} />
+          <CompileAndRenderCode code={code} />
         </div>
       </Rnd>
     </NoPanArea>

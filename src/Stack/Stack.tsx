@@ -23,10 +23,16 @@ interface Props {
     | 'large'
     | 'xlarge';
   dividers?: boolean;
+  className?: string;
 }
 
-export const Stack = ({ children, space, dividers = false }: Props) => (
-  <div>
+export const Stack = ({
+  children,
+  space,
+  dividers = false,
+  className,
+}: Props) => (
+  <div className={className}>
     {Children.toArray(children).map((item, index) => (
       <div
         key={index}

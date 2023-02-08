@@ -5,10 +5,11 @@ export const root = style({
   height: '100vh',
   width: '100vw',
   backgroundColor: colorPaletteVars.background.body,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: 16,
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 200px)',
+  columnGap: 16,
+  justifyContent: 'center',
+  padding: 32,
 });
 
 export const files = style({

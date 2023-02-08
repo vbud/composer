@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 import { Button } from 'src/Button/Button';
-import { FileId, shallow, useStore } from 'src/store';
-import { ColorScheme } from 'src/utils/colorScheme';
+import { ColorScheme, FileId, shallow, useStore } from 'src/store';
 import { Heading } from '../Heading/Heading';
 import ColorModeDarkIcon from '../icons/ColorModeDarkIcon';
 import ColorModeLightIcon from '../icons/ColorModeLightIcon';
