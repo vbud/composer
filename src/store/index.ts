@@ -389,9 +389,12 @@ export const useStore = create<State & Actions>()(
         editorWidth: state.editorWidth,
       }),
       merge: (persistedStateUnvalidated, currentState) => {
-        const persistedState = persistedStateUnvalidated
-          ? PersistedState.parse(persistedStateUnvalidated)
-          : initiatePersistedState;
+        let persistedState: PersistedState = initiatePersistedState;
+        const result = PersistedState.safeParse(persistedStateUnvalidated);
+        if (result.success) {
+          persistedState = result.data;
+        }
+
         return {
           ...currentState,
           ...persistedState,
