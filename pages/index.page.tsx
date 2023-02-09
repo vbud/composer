@@ -1,3 +1,4 @@
+import Stack from '@mui/material/Stack';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Button } from 'src/Button/Button';
@@ -9,7 +10,7 @@ import { Text } from 'src/Text/Text';
 import * as styles from './Home.css';
 
 const FileList = ({ heading, files }: { heading: string; files: File[] }) => (
-  <>
+  <div>
     <Heading level="1">{heading}</Heading>
     <div className={styles.files}>
       {files.length === 0 ? (
@@ -24,7 +25,7 @@ const FileList = ({ heading, files }: { heading: string; files: File[] }) => (
         ))
       )}
     </div>
-  </>
+  </div>
 );
 
 // ts-unused-exports:disable-next-line
@@ -48,22 +49,22 @@ export default function Home() {
         <title>composer</title>
       </Head>
 
-      <div>
-        <FileList heading="Files" files={userFiles} />
+      <Stack spacing={8}>
         <div>
-          <Button
-            onClick={() => {
-              const newFileId = createFile();
-              router.push(newFileId);
-            }}
-          >
-            New file
-          </Button>
+          <FileList heading="Files" files={userFiles} />
+          <div>
+            <Button
+              onClick={() => {
+                const newFileId = createFile();
+                router.push(newFileId);
+              }}
+            >
+              New file
+            </Button>
+          </div>
         </div>
-      </div>
-      <div>
         <FileList heading="Examples" files={exampleFiles} />
-      </div>
+      </Stack>
     </div>
   );
 }
