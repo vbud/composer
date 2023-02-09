@@ -17,7 +17,7 @@ export type FileId = z.infer<typeof FileId>;
 const FrameId = z.string();
 export type FrameId = z.infer<typeof FrameId>;
 
-const SelectedFrameId = z.union([FrameId, z.null()]);
+const SelectedFrameId = FrameId.nullable();
 export type SelectedFrameId = z.infer<typeof SelectedFrameId>;
 
 const CanvasPosition = z.object({
@@ -143,10 +143,13 @@ interface Actions {
   resetFileUIState: () => void;
 }
 
-const initialState: State = {
+const initiatePersistedState: PersistedState = {
   files: {},
   colorScheme: 'system',
   editorWidth: initialEditorWidth,
+} as const;
+const initialState: State = {
+  ...initiatePersistedState,
   editorView: null,
   canvasViewport: null,
   activeToolbarPanel: null,
@@ -386,7 +389,9 @@ export const useStore = create<State & Actions>()(
         editorWidth: state.editorWidth,
       }),
       merge: (persistedStateUnvalidated, currentState) => {
-        const persistedState = PersistedState.parse(persistedStateUnvalidated);
+        const persistedState = persistedStateUnvalidated
+          ? PersistedState.parse(persistedStateUnvalidated)
+          : initiatePersistedState;
         return {
           ...currentState,
           ...persistedState,
