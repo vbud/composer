@@ -143,13 +143,13 @@ interface Actions {
   resetFileUIState: () => void;
 }
 
-const initiatePersistedState: PersistedState = {
+const initialPersistedState: PersistedState = {
   files: {},
   colorScheme: 'system',
   editorWidth: initialEditorWidth,
 } as const;
 const initialState: State = {
-  ...initiatePersistedState,
+  ...initialPersistedState,
   editorView: null,
   canvasViewport: null,
   activeToolbarPanel: null,
@@ -389,7 +389,7 @@ export const useStore = create<State & Actions>()(
         editorWidth: state.editorWidth,
       }),
       merge: (persistedStateUnvalidated, currentState) => {
-        let persistedState: PersistedState = initiatePersistedState;
+        let persistedState: PersistedState = initialPersistedState;
         const result = PersistedState.safeParse(persistedStateUnvalidated);
         if (result.success) {
           persistedState = result.data;
