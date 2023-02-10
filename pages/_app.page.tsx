@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
+import 'parse-prop-types';
 import { ReactElement } from 'react';
 import AppErrorBoundary from 'src/AppErrorBoundary';
 import 'src/globals.css';
