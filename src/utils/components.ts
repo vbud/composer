@@ -12,7 +12,10 @@ export type Hints = Record<string, Record<string, string[]>>;
 function getComponents(): Components {
   const components: Components = {};
   for (const [name, component] of Object.entries(muiComponents)) {
-    if (reactIs.isValidElementType(component)) {
+    if (
+      name[0].toLocaleUpperCase() === name[0] &&
+      reactIs.isValidElementType(component)
+    ) {
       components[name] = component;
     }
   }
