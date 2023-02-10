@@ -1,4 +1,4 @@
-import { initialEditorWidth } from 'src/CodeEditor/ResizableCodeEditor';
+import { editorWidths } from 'src/CodeEditor/ResizableCodeEditor';
 import { componentSnippets } from 'src/snippets';
 import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
 import { formatCode } from 'src/utils/formatting';
@@ -18,7 +18,7 @@ const fileIds = {
 // a reasonable guess at a starting position that will put the first few frames
 // in view for the user
 const canvasPosition = {
-  left: -initialEditorWidth - 32,
+  left: -editorWidths.default - 32,
   top: -toolbarHeight - 128,
   zoom: 1,
 };

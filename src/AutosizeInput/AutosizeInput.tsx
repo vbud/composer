@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { capitalize } from 'lodash';
 import { useCallback, useRef, useState } from 'react';
-import { useStore } from 'src/store';
+import { nameLengths, useStore } from 'src/store';
 import { Text, TextProps } from 'src/Text/Text';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
 import * as styles from './AutosizeInput.css';
@@ -35,15 +35,19 @@ export default function AutosizeInput({
   }, [value]);
 
   const saveValue = useCallback(() => {
-    if (editedValue.length === 0) {
+    if (editedValue.length < nameLengths.min) {
       displayStatusMessage({
-        message: `${capitalize(name)} cannot be empty.`,
+        message: `${capitalize(name)} must have at least ${
+          nameLengths.min
+        } character${nameLengths.min === 1 ? '' : 's'}.`,
         tone: 'critical',
       });
       revertValue();
-    } else if (editedValue.length > 40) {
+    } else if (editedValue.length > nameLengths.max) {
       displayStatusMessage({
-        message: `${capitalize(name)} cannot be more than 40 characters long.`,
+        message: `${capitalize(name)} cannot have more than ${
+          nameLengths.max
+        } characters.`,
         tone: 'critical',
       });
       revertValue();

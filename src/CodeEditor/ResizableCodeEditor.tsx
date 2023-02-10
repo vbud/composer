@@ -6,7 +6,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { CodeEditor } from './CodeEditor';
 import * as styles from './ResizableCodeEditor.css';
 
-export const initialEditorWidth = 400;
+export const editorWidths = { min: 200, max: 840, default: 400 };
 
 export const ResizableCodeEditor = ({
   fileId,
@@ -33,8 +33,8 @@ export const ResizableCodeEditor = ({
           width: `${editorWidth}px`,
           height: '100%',
         }}
-        minWidth={initialEditorWidth}
-        maxWidth="80vw"
+        minWidth={editorWidths.min}
+        maxWidth={editorWidths.max}
         onResize={(_event, _direction, { offsetWidth }) => {
           updateEditorWidthDebounced(offsetWidth);
         }}

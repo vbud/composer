@@ -2,7 +2,7 @@ import { EditorView } from 'codemirror';
 import produce from 'immer';
 import { cloneDeep } from 'lodash';
 import { ViewPort } from 'src/Canvas/ZoomableCanvas';
-import { initialEditorWidth } from 'src/CodeEditor/ResizableCodeEditor';
+import { editorWidths } from 'src/CodeEditor/ResizableCodeEditor';
 import invariant from 'ts-invariant';
 import { z } from 'zod';
 import { create } from 'zustand';
@@ -27,15 +27,17 @@ const CanvasPosition = z.object({
 });
 export type CanvasPosition = z.infer<typeof CanvasPosition>;
 
+export const nameLengths = { min: 1, max: 40 };
+
 const Frame = z.object({
   id: FrameId,
-  name: z.string(),
+  name: z.string().min(nameLengths.min).max(nameLengths.max),
   code: z.string(),
   x: z.number(),
   y: z.number(),
-  width: z.number(),
-  height: z.number(),
-  cursorPosition: z.number(),
+  width: z.number().gt(0),
+  height: z.number().gt(0),
+  cursorPosition: z.number().gte(0),
 });
 export type Frame = z.infer<typeof Frame>;
 
@@ -64,7 +66,7 @@ export type ColorScheme = z.infer<typeof ColorScheme>;
 const PersistedState = z.object({
   files: Files,
   colorScheme: ColorScheme,
-  editorWidth: z.number(),
+  editorWidth: z.number().min(editorWidths.min).max(editorWidths.max),
 });
 type PersistedState = z.infer<typeof PersistedState>;
 
@@ -146,7 +148,7 @@ interface Actions {
 const initialPersistedState: PersistedState = {
   files: {},
   colorScheme: 'system',
-  editorWidth: initialEditorWidth,
+  editorWidth: editorWidths.default,
 } as const;
 const initialState: State = {
   ...initialPersistedState,
@@ -260,10 +262,13 @@ export const useStore = create<State & Actions>()(
         set(
           produce<State>((state) => {
             const frame = state.files[fileId].frames[frameId];
+
+            const ensureNonZeroSize = (size: number) => (size < 1 ? 1 : size);
+
             x !== undefined && (frame.x = x);
             y !== undefined && (frame.y = y);
-            width !== undefined && (frame.width = width);
-            height !== undefined && (frame.height = height);
+            width !== undefined && (frame.width = ensureNonZeroSize(width));
+            height !== undefined && (frame.height = ensureNonZeroSize(height));
           })
         ),
       updateFrameEditorState: (fileId, frameId, { code, cursorPosition }) =>
