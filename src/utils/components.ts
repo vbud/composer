@@ -1,4 +1,3 @@
-import CheckIcon from '@mui/icons-material/Check';
 import * as muiComponents from '@mui/material';
 import { omit } from 'lodash';
 import parsePropTypes from 'parse-prop-types';
@@ -11,9 +10,7 @@ type Components = Record<string, ElementType>;
 export type Hints = Record<string, Record<string, string[]>>;
 
 function getComponents(): Components {
-  const components: Components = {
-    CheckIcon,
-  };
+  const components: Components = {};
   for (const [name, component] of Object.entries(muiComponents)) {
     if (reactIs.isValidElementType(component)) {
       components[name] = component;

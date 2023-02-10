@@ -40,30 +40,6 @@ export const componentSnippets = {
 </Alert>`,
       })
     ),
-    'icon configuration': [
-      {
-        name: `icon prop`,
-        code: `<Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-  This is a success alert — check it out!
-</Alert>`,
-      },
-      {
-        name: `iconMapping prop`,
-        code: `<Alert
-  iconMapping={{
-    success: <CheckIcon fontSize="inherit" />,
-  }}
->
-  This is a success alert — check it out!
-</Alert>`,
-      },
-      {
-        name: `no icon`,
-        code: ` <Alert icon={false} severity="success">
-  This is a success alert — check it out!
-</Alert>`,
-      },
-    ],
   },
   Button: [
     {
