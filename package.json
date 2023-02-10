@@ -32,7 +32,6 @@
     "dedent": "^0.7.0",
     "deep-equal": "^2.2.0",
     "fast-glob": "^3.2.12",
-    "find-up": "^5.0.0",
     "fuse.js": "^6.6.2",
     "hammerjs": "^2.0.8",
     "immer": "^9.0.19",
