@@ -60,6 +60,7 @@ specifiers:
   react-rnd: ^10.4.1
   react-zoomable-ui: ^0.11.0
   style-mod: ^4.0.0
+  ts-extras: ^0.11.0
   ts-invariant: ^0.10.3
   ts-unused-exports: ^9.0.2
   typescript: ^4.9.5
@@ -105,6 +106,7 @@ dependencies:
   react-rnd: 10.4.1_biqbaboplfbrettd7655fr4n2y
   react-zoomable-ui: 0.11.0_react@18.2.0
   style-mod: 4.0.0
+  ts-extras: 0.11.0
   ts-invariant: 0.10.3
   use-debounce: 9.0.3_react@18.2.0
   zod: 3.20.6
@@ -5150,6 +5152,13 @@ packages:
     dependencies:
       is-number: 7.0.0
 
+  /ts-extras/0.11.0:
+    resolution: {integrity: sha512-yrbnkpcvtPiPXVFrvHHqNnCxUplqabQGX+UL5s+hpdaBeochNvixdFpgX/0MsPT99uwWv87wivdLCNezLy5OIA==}
+    engines: {node: '>=14.16'}
+    dependencies:
+      type-fest: 2.19.0
+    dev: false
+
   /ts-invariant/0.10.3:
     resolution: {integrity: sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==}
     engines: {node: '>=8'}
@@ -5219,6 +5228,11 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
     dev: true
+
+  /type-fest/2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /typed-array-length/1.0.4:
     resolution: {integrity: sha512-KjZypGq+I/H7HI5HlOoGHkWUUGq+Q0TPhQurLbyrVrvnKTBgzLhIJ7j6J/XTQOi0d1RjyZ0wdas8bKs2p0x3Ng==}

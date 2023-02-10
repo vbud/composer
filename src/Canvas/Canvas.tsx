@@ -3,6 +3,7 @@ import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FileId, shallow, useStore } from 'src/store';
 import { useInteractOutside } from 'src/utils/useInteractOutside';
+import { objectKeys } from 'ts-extras';
 import { useDebouncedCallback } from 'use-debounce';
 import * as styles from './Canvas.css';
 import { CanvasFrame } from './CanvasFrame';
@@ -100,7 +101,7 @@ export const Canvas = ({ fileId }: { fileId: FileId }) => {
       }}
       tabIndex={-1}
     >
-      {Object.keys(frames).map((frameId) => (
+      {objectKeys(frames).map((frameId) => (
         <CanvasFrame
           key={frameId}
           fileId={fileId}

@@ -2,6 +2,7 @@ import { CompletionContext } from '@codemirror/autocomplete';
 import { syntaxTree } from '@codemirror/language';
 import { SyntaxNode } from '@lezer/common';
 import { Hints } from 'src/utils/components';
+import { objectKeys } from 'ts-extras';
 
 const validForIdentifier = /^\w*$/;
 const validForAttributeStringValue = /^(\w|")*$/;
@@ -19,7 +20,7 @@ export function getCompletions(hints: Hints) {
       // console.log('node', node.name, node);
       // console.log('nodeBefore', nodeBefore.name, nodeBefore);
 
-      const componentNames = Object.keys(hints).map((name) => ({
+      const componentNames = objectKeys(hints).map((name) => ({
         label: name,
       }));
 
@@ -60,7 +61,7 @@ export function getCompletions(hints: Hints) {
 
         if (!componentName) return [];
 
-        return Object.keys(hints[componentName])
+        return objectKeys(hints[componentName])
           .filter((propName) => !existingProps.includes(propName))
           .map((propName) => ({
             label: propName,

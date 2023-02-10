@@ -49,6 +49,7 @@
     "react-rnd": "^10.4.1",
     "react-zoomable-ui": "^0.11.0",
     "style-mod": "^4.0.0",
+    "ts-extras": "^0.11.0",
     "ts-invariant": "^0.10.3",
     "use-debounce": "^9.0.3",
     "zod": "^3.20.6",

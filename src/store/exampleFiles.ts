@@ -2,6 +2,7 @@ import { editorWidths } from 'src/CodeEditor/ResizableCodeEditor';
 import { componentSnippets } from 'src/snippets';
 import { toolbarHeight } from 'src/Toolbar/Toolbar.css';
 import { formatCode } from 'src/utils/formatting';
+import { objectEntries, objectKeys } from 'ts-extras';
 import { FileId, Files, Frames } from '.';
 
 const exampleIdPrefix = 'example_';
@@ -28,7 +29,7 @@ export const exampleFiles: Files = {
     id: fileIds.tables,
     name: 'Example: tables',
     canvasPosition,
-    selectedFrameId: null,
+    selectedFrameId: componentSnippets.Table[0].name,
     frames: componentSnippets.Table.reduce<Frames>(
       (frames, { name, code }, i) => {
         const id = name;
@@ -52,8 +53,8 @@ export const exampleFiles: Files = {
     id: fileIds.alerts,
     name: 'Example: alerts',
     canvasPosition,
-    selectedFrameId: null,
-    frames: Object.entries(componentSnippets.Alert).reduce<Frames>(
+    selectedFrameId: objectKeys(componentSnippets.Alert)[0],
+    frames: objectEntries(componentSnippets.Alert).reduce<Frames>(
       (frames, [group, snippetDefinitions], i) => {
         const id = group;
         const size = 400;
