@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 import { Button } from 'src/Button/Button';
 import { ColorScheme, FileId, shallow, useStore } from 'src/store';
+import { isExampleId } from 'src/store/exampleFiles';
 import { Heading } from '../Heading/Heading';
 import ColorModeDarkIcon from '../icons/ColorModeDarkIcon';
 import ColorModeLightIcon from '../icons/ColorModeLightIcon';
@@ -66,14 +67,16 @@ export default function SettingsPanel({ fileId }: { fileId: FileId }) {
             ))}
           </div>
         </fieldset>
-        <div>
-          <Heading level="3">File settings</Heading>
-          <div className={styles.fileSettingsContainer}>
-            <Button tone="critical" onClick={confirmDelete}>
-              Delete file
-            </Button>
+        {!isExampleId(fileId) && (
+          <div>
+            <Heading level="3">File settings</Heading>
+            <div className={styles.fileSettingsContainer}>
+              <Button tone="critical" onClick={confirmDelete}>
+                Delete file
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </Stack>
     </ToolbarPanel>
   );
