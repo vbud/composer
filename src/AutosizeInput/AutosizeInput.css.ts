@@ -8,6 +8,8 @@ export const root = style({
 export const input = style({
   font: vars.font.scale.standard,
   border: 'none',
+  // override default box-sizing so that padding adds to the width
+  boxSizing: 'content-box',
   padding: '2px 4px',
   // just enough room to show blinking cursor when empty
   minWidth: 1,
